@@ -1,14 +1,158 @@
 [
   {
-    "id": 1,       
-    "code": "18",
-    "header": "Cover page",
-    "type": "Cover page",
-    "status": "In Process",
-    "limit": "5",
-    "reviewer": "Eddie Lake"
+    "id": 1,
+    "stock": "CPLE6F",
+    "name": "COPEL PNB",
+    "close": 11.78,
+    "change": -1.2573344509639595,
+    "volume": 30646,
+    "market_cap": 34421699849,
+    "logo": "https://icons.brapi.dev/icons/CPLE6F.svg",
+    "sector": "Utilities",
+    "type": "stock"
+  },
+  {
+    "id": 2,
+    "stock": "ITUB4",
+    "name": "ITAUUNIBANCOPN",
+    "close": 34.9,
+    "change": -0.17162471395881657,
+    "volume": 25888400,
+    "market_cap": 357854287652,
+    "logo": "https://icons.brapi.dev/icons/ITUB4.svg",
+    "sector": "Finance",
+    "type": "stock"
+  },
+  {
+    "id": 3,
+    "stock": "LREN3",
+    "name": "LOJAS RENNERON",
+    "close": 18.17,
+    "change": -2.8342245989304686,
+    "volume": 25465400,
+    "market_cap": 19754503211,
+    "logo": "https://icons.brapi.dev/icons/LREN3.svg",
+    "sector": "Retail Trade",
+    "type": "stock"
+  },
+  {
+    "id": 4,
+    "stock": "PETR4",
+    "name": "PETROBRAS PN",
+    "close": 32.2,
+    "change": -1.3178057002758188,
+    "volume": 24106300,
+    "market_cap": 437282788098,
+    "logo": "https://icons.brapi.dev/icons/PETR4.svg",
+    "sector": "Energy Minerals",
+    "type": "stock"
+  },
+  {
+    "id": "5",
+    "stock": "BEEF3",
+    "name": "MINERVA",
+    "close": 5.25,
+    "change": -2.4163568773234183,
+    "volume": 22164900,
+    "market_cap": 5246431366,
+    "logo": "https://icons.brapi.dev/icons/BEEF3.svg",
+    "sector": "Distribution Services",
+    "type": "stock"
+  },
+  {
+    "id": "6",
+    "stock": "CSAN3",
+    "name": "COSAN",
+    "close": 6.28,
+    "change": -1.5673981191222515,
+    "volume": 20239400,
+    "market_cap": 11917682116,
+    "logo": "https://icons.brapi.dev/icons/CSAN3.svg",
+    "sector": "Utilities",
+    "type": "stock"
+  },
+  {
+    "id": "7",
+    "stock": "MGLU3",
+    "name": "MAGAZINE LUIZA",
+    "close": 7.95,
+    "change": -1.119402985074614,
+    "volume": 18948700,
+    "market_cap": 5370003519,
+    "logo": "https://icons.brapi.dev/icons/MGLU3.svg",
+    "sector": "Retail Trade",
+    "type": "stock"
+  },
+  {
+    "id": "8",
+    "stock": "AZUL4",
+    "name": "AZUL PN",
+    "close": 0.79,
+    "change": -2.469135802469138,
+    "volume": 18811200,
+    "market_cap": 748565045,
+    "logo": "https://icons.brapi.dev/icons/AZUL4.svg",
+    "sector": "Transportation",
+    "type": "stock"
+  },
+  {
+    "id": "9",
+    "stock": "ANIM3",
+    "name": "ANIMA",
+    "close": 3.68,
+    "change": -3.1578947368420964,
+    "volume": 17382000,
+    "market_cap": 1513964605,
+    "logo": "https://icons.brapi.dev/icons/ANIM3.svg",
+    "sector": "Miscellaneous",
+    "type": "stock"
+  },
+  {
+    "id": "10",
+    "stock": "B3SA3",
+    "name": "B3",
+    "close": 13.61,
+    "change": -0.8739985433357683,
+    "volume": 16998500,
+    "market_cap": 69727708818,
+    "logo": "https://icons.brapi.dev/icons/B3SA3.svg",
+    "sector": "Finance",
+    "type": "stock"
+  },
+  {
+    "id": "11",
+    "stock": "MRFG3",
+    "name": "MARFRIG",
+    "close": 23,
+    "change": 0,
+    "volume": 16487000,
+    "market_cap": 19205338318,
+    "logo": "https://icons.brapi.dev/icons/MRFG3.svg",
+    "sector": "Consumer Non-Durables",
+    "type": "stock"
+  },
+  {
+    "id": "12",
+    "stock": "BBDC4",
+    "name": "BRADESCO PN",
+    "close": 16.11,
+    "change": 0.3738317757009266,
+    "volume": 16403700,
+    "market_cap": 158538194140,
+    "logo": "https://icons.brapi.dev/icons/BBDC4.svg",
+    "sector": "Finance",
+    "type": "stock"
+  },
+  {
+    "id": "13",
+    "stock": "VALE3",
+    "name": "VALE",
+    "close": 55.36,
+    "change": -1.142857142857144,
+    "volume": 15141300,
+    "market_cap": 239051613953,
+    "logo": "https://icons.brapi.dev/icons/VALE3.svg",
+    "sector": "Non-Energy Minerals",
+    "type": "stock"
   }
- 
 ]
-
-
