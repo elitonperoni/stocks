@@ -26,11 +26,9 @@ import {
   IconChevronRight,
   IconChevronsLeft,
   IconChevronsRight,
-  IconCircleCheckFilled,
   IconDotsVertical,
   IconGripVertical,
   IconLayoutColumns,
-  IconLoader,
   IconPlus,
   IconTrendingUp,
 } from "@tabler/icons-react";
@@ -101,6 +99,8 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { formatCurrency } from "@/utils/formatCurrency";
+import labelValuePositiveNegative from "./labelValuePositiveNegative";
 
 export const schema = z.object({
   id: z.number(),
@@ -112,9 +112,9 @@ export const schema = z.object({
   volume: z.number(),
   market_cap: z.number(),
   sector: z.string(),
+  type: z.string(),
 });
 
-// Create a separate component for the drag handle
 function DragHandle({ id }: { id: number }) {
   const { attributes, listeners } = useSortable({
     id,
@@ -135,39 +135,8 @@ function DragHandle({ id }: { id: number }) {
 }
 
 const columns: ColumnDef<z.infer<typeof schema>>[] = [
-  // {
-  //   id: "drag",
-  //   header: () => null,
-  //   cell: ({ row }) => <DragHandle id={row.original.id} />,
-  // },
-  // {
-  //   id: "select",
-  //   header: ({ table }) => (
-  //     <div className="flex items-center justify-center">
-  //       <Checkbox
-  //         checked={
-  //           table.getIsAllPageRowsSelected() ||
-  //           (table.getIsSomePageRowsSelected() && "indeterminate")
-  //         }
-  //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //         aria-label="Select all"
-  //       />
-  //     </div>
-  //   ),
-  //   cell: ({ row }) => (
-  //     <div className="flex items-center justify-center">
-  //       <Checkbox
-  //         checked={row.getIsSelected()}
-  //         onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //         aria-label="Select row"
-  //       />
-  //     </div>
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
   {
-    accessorKey: "avatarUrl", // chave do dado que contém a URL da imagem
+    accessorKey: "avatarUrl", 
     header: "----------",
     cell: ({ row }) => {
       return (
@@ -193,7 +162,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     accessorKey: "name",
     header: "Nome",
-      cell: ({ row }) => {
+    cell: ({ row }) => {
       return (
         <div>
           <div className="text-sm font-medium">{row.original.name}</div>
@@ -208,7 +177,9 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     cell: ({ row }) => {
       return (
         <div>
-          <div className="text-sm font-medium">{row.original.close}</div>
+          <div className="text-sm font-medium">
+            {formatCurrency(row.original.close)}
+          </div>
         </div>
       );
     },
@@ -218,33 +189,39 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     accessorKey: "change",
     header: "Variação R$",
     cell: ({ row }) => {
-      return (
-        <div>
-          <div className="text-sm font-medium">{row.original.change.toFixed(2)}</div>
-        </div>
-      );
-    },
-    enableHiding: false,
-  },
-  {
-    accessorKey: "id",
-    header: "Volume R$",
-    cell: ({ row }) => {
-      return (
-        <div>
-          <div className="text-sm font-medium">{row.original.volume.toFixed(2)}</div>
-        </div>
-      );
+      return labelValuePositiveNegative(row.original.change);
     },
     enableHiding: false,
   },
   {
     accessorKey: "volume",
+    header: "Volume R$",
+    cell: ({ row }) => {
+      return (
+        <div>
+          <div className="text-sm font-medium">
+            R${row.original.volume.toLocaleString("pt-BR", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </div>
+        </div>
+      );
+    },
+    enableHiding: false,
+  },
+  {
+    accessorKey: "capital",
     header: "Capital R$",
     cell: ({ row }) => {
       return (
         <div>
-          <div className="text-sm font-medium">{row.original.market_cap.toFixed(2)}</div>
+          <div className="text-sm font-medium">
+            R$ {row.original.market_cap.toLocaleString("pt-BR", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </div>
         </div>
       );
     },
@@ -256,123 +233,14 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     cell: ({ row }) => {
       return (
         <div>
-          <div className="text-sm font-medium">{row.original.sector}</div>
+          <div className="text-sm font-medium">R$ {row.original.sector}</div>
         </div>
       );
     },
     enableHiding: false,
   },
-  // {
-  //   accessorKey: "type",
-  //   header: "Section Type",
-  //   cell: ({ row }) => (
-  //     <div className="w-32">
-  //       <Badge variant="outline" className="text-muted-foreground px-1.5">
-  //         {row.original.type}
-  //       </Badge>
-  //     </div>
-  //   ),
-  // },
-  // {
-  //   accessorKey: "status",
-  //   header: "Status",
-  //   cell: ({ row }) => (
-  //     <Badge variant="outline" className="text-muted-foreground px-1.5">
-  //       {row.original.status === "Done" ? (
-  //         <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
-  //       ) : (
-  //         <IconLoader />
-  //       )}
-  //       {row.original.status}
-  //     </Badge>
-  //   ),
-  // },
-  // {
-  //   accessorKey: "target",
-  //   header: () => <div className="w-full texts-right">Target</div>,
-  //   cell: ({ row }) => (
-  //     <form
-  //       onSubmit={(e) => {
-  //         e.preventDefault();
-  //         toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
-  //           loading: `Saving ${row.original.header}`,
-  //           success: "Done",
-  //           error: "Error",
-  //         });
-  //       }}
-  //     >
-  //       <Label htmlFor={`${row.original.id}-target`} className="sr-only">
-  //         Target
-  //       </Label>
-  //       <Input
-  //         className="hover:bg-input/30 focus-visible:bg-background dark:hover:bg-input/30 dark:focus-visible:bg-input/30 h-8 w-16 border-transparent bg-transparent text-right shadow-none focus-visible:border dark:bg-transparent"
-  //         // defaultValue={row.original.target}
-  //         id={`${row.original.id}-target`}
-  //       />
-  //     </form>
-  //   ),
-  // },
-  // {
-  //   accessorKey: "limit",
-  //   header: () => <div className="w-full text-right">Limit</div>,
-  //   cell: ({ row }) => (
-  //     <form
-  //       onSubmit={(e) => {
-  //         e.preventDefault();
-  //         toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
-  //           loading: `Saving ${row.original.header}`,
-  //           success: "Done",
-  //           error: "Error",
-  //         });
-  //       }}
-  //     >
-  //       <Label htmlFor={`${row.original.id}-limit`} className="sr-only">
-  //         Limit
-  //       </Label>
-  //       <Input
-  //         className="hover:bg-input/30 focus-visible:bg-background dark:hover:bg-input/30 dark:focus-visible:bg-input/30 h-8 w-16 border-transparent bg-transparent text-right shadow-none focus-visible:border dark:bg-transparent"
-  //         defaultValue={row.original.limit}
-  //         id={`${row.original.id}-limit`}
-  //       />
-  //     </form>
-  //   ),
-  // },
-  // {
-  //   accessorKey: "reviewer",
-  //   header: "Reviewer",
-  //   cell: ({ row }) => {
-  //     const isAssigned = row.original.reviewer !== "Assign reviewer";
-
-  //     if (isAssigned) {
-  //       return row.original.reviewer;
-  //     }
-
-  //     return (
-  //       <>
-  //         <Label htmlFor={`${row.original.id}-reviewer`} className="sr-only">
-  //           Reviewer
-  //         </Label>
-  //         <Select>
-  //           <SelectTrigger
-  //             className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-  //             size="sm"
-  //             id={`${row.original.id}-reviewer`}
-  //           >
-  //             <SelectValue placeholder="Assign reviewer" />
-  //           </SelectTrigger>
-  //           <SelectContent align="end">
-  //             <SelectItem value="Eddie Lake">Eddie Lake</SelectItem>
-  //             <SelectItem value="Jamik Tashpulatov">
-  //               Jamik Tashpulatov
-  //             </SelectItem>
-  //           </SelectContent>
-  //         </Select>
-  //       </>
-  //     );
-  //   },
-  // },
   {
-    id: "actions",
+    id: "id",
     cell: () => (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -399,7 +267,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
 
 function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
-    id: row.original.stock,
+    id: row.original.id,
   });
 
   return (
@@ -840,7 +708,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex flex-col gap-3">
+              {/* <div className="flex flex-col gap-3">
                 <Label htmlFor="status">Status</Label>
                 <Select defaultValue={item.code}>
                   <SelectTrigger id="status" className="w-full">
@@ -852,19 +720,19 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
                     <SelectItem value="Not Started">Not Started</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
+              </div> */}
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
                 <Label htmlFor="target">Target</Label>
                 {/* <Input id="target" defaultValue={item.target} /> */}
               </div>
-              <div className="flex flex-col gap-3">
+              {/* <div className="flex flex-col gap-3">
                 <Label htmlFor="limit">Limit</Label>
                 <Input id="limit" defaultValue={item.code} />
-              </div>
+              </div> */}
             </div>
-            <div className="flex flex-col gap-3">
+            {/* <div className="flex flex-col gap-3">
               <Label htmlFor="reviewer">Reviewer</Label>
               <Select defaultValue={item.code}>
                 <SelectTrigger id="reviewer" className="w-full">
@@ -878,7 +746,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
                   <SelectItem value="Emily Whalen">Emily Whalen</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+            </div> */}
           </form>
         </div>
         <DrawerFooter>
