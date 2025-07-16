@@ -60,7 +60,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Drawer,
   DrawerClose,
@@ -101,6 +100,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { formatCurrency } from "@/utils/formatCurrency";
 import labelValuePositiveNegative from "./labelValuePositiveNegative";
+import { Combobox } from "./ui/combobox";
 
 export const schema = z.object({
   id: z.number(),
@@ -136,7 +136,7 @@ function DragHandle({ id }: { id: number }) {
 
 const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
-    accessorKey: "avatarUrl", 
+    accessorKey: "avatarUrl",
     header: "----------",
     cell: ({ row }) => {
       return (
@@ -200,7 +200,8 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
       return (
         <div>
           <div className="text-sm font-medium">
-            R${row.original.volume.toLocaleString("pt-BR", {
+            R$
+            {row.original.volume.toLocaleString("pt-BR", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             })}
@@ -361,7 +362,7 @@ export function DataTable({
         <Label htmlFor="view-selector" className="sr-only">
           View
         </Label>
-        <Select defaultValue="outline">
+        {/* <Select defaultValue="outline">
           <SelectTrigger
             className="flex w-fit @4xl/main:hidden"
             size="sm"
@@ -369,14 +370,14 @@ export function DataTable({
           >
             <SelectValue placeholder="Select a view" />
           </SelectTrigger>
-          <SelectContent>
+           <SelectContent>
             <SelectItem value="outline">Outline</SelectItem>
             <SelectItem value="past-performance">Past Performance</SelectItem>
             <SelectItem value="key-personnel">Key Personnel</SelectItem>
             <SelectItem value="focus-documents">Focus Documents</SelectItem>
-          </SelectContent>
-        </Select>
-        <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
+          </SelectContent> *
+        </Select> */}
+        {/* <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
           <TabsTrigger value="outline">Outline</TabsTrigger>
           <TabsTrigger value="past-performance">
             Past Performance <Badge variant="secondary">3</Badge>
@@ -385,7 +386,7 @@ export function DataTable({
             Key Personnel <Badge variant="secondary">2</Badge>
           </TabsTrigger>
           <TabsTrigger value="focus-documents">Focus Documents</TabsTrigger>
-        </TabsList>
+        </TabsList> */}
         <div className="flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -396,6 +397,7 @@ export function DataTable({
                 <IconChevronDown />
               </Button>
             </DropdownMenuTrigger>
+
             <DropdownMenuContent align="end" className="w-56">
               {table
                 .getAllColumns()
@@ -426,6 +428,16 @@ export function DataTable({
           </Button>
         </div>
       </div>
+
+      <div className="flex ">
+        <div className="p-6 rounded-xl shadow-md">
+          <Input />
+        </div>
+        <div className="p-6 rounded-xl shadow-md">
+          <Combobox data={[]} />
+        </div>
+      </div>
+
       <TabsContent
         value="outline"
         className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
