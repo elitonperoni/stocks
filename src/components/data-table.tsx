@@ -217,10 +217,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
       return (
         <div>
           <div className="text-sm font-medium">
-            R$ {row.original.market_cap.toLocaleString("pt-BR", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+            {formatCurrency(row.original.market_cap)}
           </div>
         </div>
       );
@@ -233,7 +230,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     cell: ({ row }) => {
       return (
         <div>
-          <div className="text-sm font-medium">R$ {row.original.sector}</div>
+          <div className="text-sm font-medium">{row.original.sector}</div>
         </div>
       );
     },
