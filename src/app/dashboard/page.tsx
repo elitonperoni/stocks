@@ -23,7 +23,6 @@ export default function Page() {
         } as React.CSSProperties
       }
     >
-      
       <AppSidebar variant="inset" />
       <SidebarInset>
         <SiteHeader />
