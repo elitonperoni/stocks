@@ -1,9 +1,9 @@
 "use client"
- 
+
 import * as React from "react"
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react"
- 
-import { cn } from "@/lib/utils"
+
+import { cn } from "@/lib/utils" // Utilitário para mesclar classes do Tailwind
 import { Button } from "@/components/ui/button"
 import {
   Command,
@@ -18,34 +18,22 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
- 
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-]
- 
-export function Combobox({ data }: { data: any[] }) {
+
+// 1. Interface de props mais robusta
+interface ComboboxProps {
+  data: { value: string; label: string }[];
+  value: string;
+  onValueChange: (value: string) => void;
+  className?: string; // Para permitir customização de estilo
+}
+
+export function Combobox({ data, value, onValueChange, className }: ComboboxProps) {
+  // O estado de 'open' continua sendo interno, o que é correto.
   const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("")
- 
+
+  // 2. O estado interno 'value' foi REMOVIDO.
+  // O componente agora depende da prop 'value'.
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -53,36 +41,39 @@ export function Combobox({ data }: { data: any[] }) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          // Usando 'cn' para mesclar a classe padrão com a que vem via props
+          className={cn("w-[200px] justify-between", className)}
         >
           {value
-            ? data.find((framework) => framework.value === value)?.label
-            : "Select framework..."}
+            ? data.find((item) => item.value === value)?.label
+            : "Selecione"}
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Pesquisa" />
+          <CommandInput placeholder="Pesquisa..." />
           <CommandList>
-            <CommandEmpty>Nenhum registro encontrado</CommandEmpty>
+            <CommandEmpty>Nenhum registro encontrado.</CommandEmpty>
             <CommandGroup>
-              {data.map((framework) => (
+              {data.map((item) => (
                 <CommandItem
-                  key={framework.value}
-                  value={framework.value}
+                  key={item.value}
+                  value={item.value}
                   onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue)
+                    // 3. Em vez de 'setValue', chamamos 'onValueChange'.
+                    // Isso notifica o react-hook-form sobre a mudança.
+                    onValueChange(currentValue === value ? "" : currentValue)
                     setOpen(false)
                   }}
                 >
                   <CheckIcon
                     className={cn(
                       "mr-2 h-4 w-4",
-                      value === framework.value ? "opacity-100" : "opacity-0"
+                      value === item.value ? "opacity-100" : "opacity-0"
                     )}
                   />
-                  {framework.label}
+                  {item.label}
                 </CommandItem>
               ))}
             </CommandGroup>
