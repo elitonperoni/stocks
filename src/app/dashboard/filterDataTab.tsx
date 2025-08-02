@@ -2,7 +2,7 @@
 
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { Combobox } from "@/components/ui/combobox"; // Supondo o caminho do seu componente
+import { Combobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -12,17 +12,26 @@ import {
 } from "@/components/ui/popover";
 
 import { Form, FormField } from "@/components/ui/form";
-import { Trash, Trash2, Trash2Icon } from "lucide-react";
-import { IconBrandLoom } from "@tabler/icons-react";
-import { useState } from "react";
-// Interface para a tipagem do formulário
+import {  Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { stockApi } from "@/api";
 interface FilterFormValues {
   setor: string;
   codigo: string;
   tipo: string;
 }
 
-export default function FilterDataTab() {
+interface FilterDataTabProps {
+  readonly filterData: any;
+  readonly onSetFilterData: (data: FilterDataTabProps["filterData"]) => unknown;
+  readonly onSearchStocks: (data: any) => unknown;
+}
+
+export default function FilterDataTab({
+  filterData,
+  onSetFilterData,
+  onSearchStocks
+}: FilterDataTabProps) {
   const form = useForm<FilterFormValues>({
     defaultValues: {
       setor: "",
@@ -31,17 +40,22 @@ export default function FilterDataTab() {
     },
   });
   const [open, setOpen] = useState(false);
+ 
+  const onSubmit: SubmitHandler<FilterFormValues> = async (data) => {
+    const newData = {
+      setor: data.setor,
+      codigo: data.codigo,
+      tipo: data.tipo,
+    }
 
-  // Função que recebe os dados do formulário na submissão
-  const onSubmit: SubmitHandler<FilterFormValues> = (data) => {
-    console.log("Filtros Aplicados:", data);
-    // Aqui você pode chamar uma API ou atualizar o estado da sua aplicação
+    onSetFilterData(newData);
+    onSearchStocks({ ...newData});
+
     setOpen(false);
   };
 
   const handleClear = () => {
-    form.reset(); // Resets all form fields to their default values (or an empty object if no defaults are specified)
-    // You can also reset to specific values: reset({ field1: '', field2: 'default' });
+    form.reset(); 
   };
 
   return (
@@ -50,7 +64,7 @@ export default function FilterDataTab() {
         <Input placeholder="Busca geral..." />
       </div>
       <div className="p-6 rounded-xl shadow-md">
-        <Popover  open={open} onOpenChange={setOpen}>
+        <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button variant="outline">Abrir Filtros</Button>
           </PopoverTrigger>

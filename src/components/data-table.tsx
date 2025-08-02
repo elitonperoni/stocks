@@ -102,6 +102,8 @@ import { formatCurrency } from "@/utils/formatCurrency";
 import labelValuePositiveNegative from "./labelValuePositiveNegative";
 import { Combobox } from "./ui/combobox";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import LoadingSpinner from "./ui/loadingSpinner";
+import { StocksResponse } from "@/models/response/stocksResponse";
 
 export const schema = z.object({
   id: z.number(),
@@ -111,29 +113,9 @@ export const schema = z.object({
   close: z.number(),
   change: z.number(),
   volume: z.number(),
-  market_cap: z.number(),
-  sector: z.string(),
+  //sector: z.string(),
   type: z.string(),
 });
-
-function DragHandle({ id }: { id: number }) {
-  const { attributes, listeners } = useSortable({
-    id,
-  });
-
-  return (
-    <Button
-      {...attributes}
-      {...listeners}
-      variant="ghost"
-      size="icon"
-      className="text-muted-foreground size-7 hover:bg-transparent"
-    >
-      <IconGripVertical className="text-muted-foreground size-3" />
-      <span className="sr-only">Drag to reorder</span>
-    </Button>
-  );
-}
 
 const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
@@ -202,7 +184,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
         <div>
           <div className="text-sm font-medium">
             R$
-            {row.original.volume.toLocaleString("pt-BR", {
+            {(row.original.volume ?? 0).toLocaleString("pt-BR", {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             })}
@@ -212,32 +194,18 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     },
     enableHiding: false,
   },
-  {
-    accessorKey: "capital",
-    header: "Capital R$",
-    cell: ({ row }) => {
-      return (
-        <div>
-          <div className="text-sm font-medium">
-            {formatCurrency(row.original.market_cap)}
-          </div>
-        </div>
-      );
-    },
-    enableHiding: false,
-  },
-  {
-    accessorKey: "sector",
-    header: "Setor R$",
-    cell: ({ row }) => {
-      return (
-        <div>
-          <div className="text-sm font-medium">{row.original.sector}</div>
-        </div>
-      );
-    },
-    enableHiding: false,
-  },
+  // {
+  //   accessorKey: "sector",
+  //   header: "Setor R$",
+  //   cell: ({ row }) => {
+  //     return (
+  //       <div>
+  //         <div className="text-sm font-medium">{row.original.sector ?? ""}</div>
+  //       </div>
+  //     );
+  //   },
+  //   enableHiding: false,
+  // },
   {
     id: "id",
     cell: () => (
@@ -271,6 +239,7 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
 
   return (
     <TableRow
+      onClick={() => console.log(`Row ${row.id} clicked`)}
       data-state={row.getIsSelected() && "selected"}
       data-dragging={isDragging}
       ref={setNodeRef}
@@ -290,11 +259,13 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
 }
 
 export function DataTable({
-  data: initialData,
+  data,
+  loading = false,
 }: {
-  data: z.infer<typeof schema>[];
+  data: StocksResponse[];
+  loading?: boolean;
 }) {
-  const [data, setData] = React.useState(() => initialData);
+  //const [data, setData] = React.useState(() => initialData);
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -343,23 +314,22 @@ export function DataTable({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-    if (active && over && active.id !== over.id) {
-      setData((data) => {
-        const oldIndex = dataIds.indexOf(active.id);
-        const newIndex = dataIds.indexOf(over.id);
-        return arrayMove(data, oldIndex, newIndex);
-      });
-    }
-  }
+  // function handleDragEnd(event: DragEndEvent) {
+  //   const { active, over } = event;
+  //   if (active && over && active.id !== over.id) {
+  //     setData((data) => {
+  //       const oldIndex = dataIds.indexOf(active.id);
+  //       const newIndex = dataIds.indexOf(over.id);
+  //       return arrayMove(data, oldIndex, newIndex);
+  //     });
+  //   }
+  // }
 
-  return (    
+  return (
     <Tabs
       defaultValue="outline"
       className="w-full flex-col justify-start gap-4"
     >
-   
       <TabsContent
         value="outline"
         className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6 pt-1"
@@ -368,7 +338,7 @@ export function DataTable({
           <DndContext
             collisionDetection={closestCenter}
             modifiers={[restrictToVerticalAxis]}
-            onDragEnd={handleDragEnd}
+            //onDragEnd={handleDragEnd}
             sensors={sensors}
             id={sortableId}
           >
@@ -391,27 +361,41 @@ export function DataTable({
                   </TableRow>
                 ))}
               </TableHeader>
-              <TableBody className="**:data-[slot=table-cell]:first:w-8">
-                {table.getRowModel().rows?.length ? (
-                  <SortableContext
-                    items={dataIds}
-                    strategy={verticalListSortingStrategy}
-                  >
-                    {table.getRowModel().rows.map((row) => (
-                      <DraggableRow key={row.id} row={row} />
-                    ))}
-                  </SortableContext>
-                ) : (
+
+              {loading ? (
+                <TableBody className="**:data-[slot=table-cell]:first:w-8">
                   <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center"
-                    >
-                      No results.
+                    <TableCell colSpan={columns.length} className="h-24">
+                      <LoadingSpinner text="Carregando dados..." />
                     </TableCell>
                   </TableRow>
-                )}
-              </TableBody>
+                </TableBody>
+              ) : (
+                <TableBody className="**:data-[slot=table-cell]:first:w-8">
+                  {table.getRowModel().rows?.length ? (
+                    <SortableContext
+                      items={dataIds}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      {table.getRowModel().rows.map((row) => (
+                        <DraggableRow 
+                          key={row.id} 
+                          row={row} 
+                          />
+                      ))}
+                    </SortableContext>
+                  ) : (
+                    <TableRow>
+                      <TableCell
+                        colSpan={columns.length}
+                        className="h-24 text-center"
+                      >
+                        No results.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              )}
             </Table>
           </DndContext>
         </div>
