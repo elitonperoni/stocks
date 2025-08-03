@@ -22,12 +22,13 @@ jobs:
         password: ${{ secrets.GH_PACKAGES_TOKEN }}
         
     - run: |
-        docker build \
-          --build-arg NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }} \
-          -t ghcr.io/${{ github.repository }}:latest \
-          -f Dockerfile .
+       docker build \
+            --build-arg NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }} \
+            -t ghcr.io/${{ github.repository }}:latest \
+            -f Dockerfile .
+          docker push ghcr.io/${{ github.repository }}:latest
         
-        docker tag ghcr.io/${{ github.repository }}:latest ghcr.io/${{ github.repository }}:${GITHUB_SHA}
+       docker tag ghcr.io/${{ github.repository }}:latest ghcr.io/${{ github.repository }}:${GITHUB_SHA}
         
     - run: |
         docker push ghcr.io/${{ github.repository }}:latest 
