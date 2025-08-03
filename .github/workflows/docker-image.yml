@@ -22,12 +22,15 @@ jobs:
         password: ${{ secrets.GH_PACKAGES_TOKEN }}
         
     - run: |
-        docker build -t ghcr.io/elitonperoni/stock/stock:latest -f Dockerfile .
-        docker tag ghcr.io/elitonperoni/stock/stock:latest ghcr.io/elitonperoni/stock/stock:${GITHUB_SHA}
+        docker build \
+            --build-arg NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }} \
+        -t ghcr.io/${{ github.repository }}:latest -f Dockerfile .
+        
+        docker tag ghcr.io/${{ github.repository }}:latest ghcr.io/${{ github.repository }}:${GITHUB_SHA}
         
     - run: |
-        docker push ghcr.io/elitonperoni/stock/stock:latest 
-        docker push ghcr.io/elitonperoni/stock/stock:${GITHUB_SHA} 
+        docker push ghcr.io/${{ github.repository }}:latest 
+        docker push ghcr.io/${{ github.repository }}:${GITHUB_SHA} 
 
 # 5. Conectar-se ao servidor via SSH e fazer as operações no servidor
     - name: Deploy to server
@@ -43,7 +46,7 @@ jobs:
           docker compose down
 
           # Remova a imagem antiga
-          docker rmi ghcr.io/elitonperoni/stock/stock:latest || true                  
+          docker rmi ghcr.io/${{ github.repository }}:latest || true                  
           
           # Suba o container com a nova imagem
           docker compose up -d
