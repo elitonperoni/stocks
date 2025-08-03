@@ -35,7 +35,6 @@ export default function Page() {
   const [stocksData, setStocksData] = useState<StocksResponse[]>([]);
 
   useEffect(() => {
-    console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
     fetchStocks(filterData);
   }, []);
 
@@ -95,8 +94,8 @@ export default function Page() {
                   <Button variant="outline">Abrir Dashboard</Button>
                 </DrawerTrigger>
                 <DrawerTitle />
-                <DrawerContent className="w-[100vw] max-w-none h-screen p-0">
-                  <div className="h-full overflow-y-auto p-6">
+                <DrawerContent className="fixed inset-0 z-50 w-screen h-screen p-0 bg-background border-none before:hidden shadow-none">
+                  <div className="h-full w-full overflow-y-auto p-6 ">
                     <StockDashboard />
                   </div>
                 </DrawerContent>

@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Card,
   CardContent,
@@ -7,37 +5,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { RangeSelector } from "./rangeSelector";
+import { ChartContainer } from "@/components/ui/chart";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  AreaChart,
   Area,
-  XAxis,
-  YAxis,
+  AreaChart,
   CartesianGrid,
   ResponsiveContainer,
   Tooltip,
+  XAxis,
+  YAxis,
 } from "recharts";
-import { ChartContainer } from "@/components/ui/chart";
-import {
-  TrendingUp,
-  TrendingDown,
-  Calendar,
-  DollarSign,
-  BarChart3,
-  Volume2,
-} from "lucide-react";
-import { useState } from "react";
-import { RangeSelector } from "./rangeSelector";
 import { formatBRL, formatLargeNumber } from "@/utils/formt";
-import LineChartStock from "./lineChartStock";
+
 
 const stockData = {
   currency: "BRL",
@@ -658,260 +638,149 @@ const chartData = stockData.historicalDataPrice.map((item, index) => ({
   volume: item.volume,
 }));
 
-export default function StockDashboard() {
-  const isPositive = stockData.regularMarketChange > 0;
-
+export default function LineChartStock() {
   return (
-    <div className="min-h-screen bg-gray-900 p-6 ">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <img
-            src={stockData.logourl || "/placeholder.svg"}
-            alt={stockData.symbol}
-            className="w-12 h-12"
-          />
-          <div>
-            <h1 className="text-3xl font-bold text-white">
-              {stockData.symbol}
-            </h1>
-            <p className="text-gray-400">{stockData.longName}</p>
-          </div>
-        </div>
+    <Card className="w-full h-full bg-gray-800 border-gray-700">
+      <CardHeader>
+        <CardTitle className="text-white">
+          Histórico de Preços - Últimos 5 Dias
+        </CardTitle>
+        <CardDescription className="text-gray-400">
+          Evolução do preço de fechamento da ação { "stockData.symbol"}
+        </CardDescription>
 
-        <LineChartStock/>
-
-        {/* Métricas principais */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="bg-gray-800 border-gray-700">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-white">
-                Preço Atual
-              </CardTitle>
-              <DollarSign className="h-4 w-4 text-gray-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">
-                {formatBRL(stockData.regularMarketPrice)}
-              </div>
-              <div className="flex items-center gap-1 text-xs">
-                {isPositive ? (
-                  <TrendingUp className="h-3 w-3 text-green-500" />
-                ) : (
-                  <TrendingDown className="h-3 w-3 text-red-500" />
-                )}
-                <span
-                  className={isPositive ? "text-green-500" : "text-red-500"}
-                >
-                  {formatBRL(stockData.regularMarketChange)} (
-                  {stockData.regularMarketChangePercent.toFixed(2)}%)
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gray-800 border-gray-700">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-white">
-                Volume
-              </CardTitle>
-              <Volume2 className="h-4 w-4 text-gray-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">
-                {formatLargeNumber(stockData.regularMarketVolume)}
-              </div>
-              <p className="text-xs text-gray-400">Ações negociadas</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gray-800 border-gray-700">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-white">
-                Valor de Mercado
-              </CardTitle>
-              <BarChart3 className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">
-                {formatBRL(stockData.marketCap / 1000000000)}B
-              </div>
-              <p className="text-xs text-gray-400">Market Cap</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gray-800 border-gray-700">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-white">
-                P/L
-              </CardTitle>
-              <Calendar className="h-4 w-4 text-gray-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">
-                {stockData.priceEarnings.toFixed(2)}
-              </div>
-              <p className="text-xs text-gray-400">Price/Earnings</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        
-
-        {/* Informações adicionais */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="bg-gray-800 border-gray-700">
-            <CardHeader>
-              <CardTitle className="text-white">
-                Informações da Sessão
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-400">Abertura:</span>
-                <span className="font-medium text-white">
-                  {formatBRL(stockData.regularMarketOpen)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-400">
-                  Fechamento Anterior:
-                </span>
-                <span className="font-medium text-white">
-                  {formatBRL(stockData.regularMarketPreviousClose)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-400">Máxima do Dia:</span>
-                <span className="font-medium text-white">
-                  {formatBRL(stockData.regularMarketDayHigh)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-400">Mínima do Dia:</span>
-                <span className="font-medium text-white">
-                  {formatBRL(stockData.regularMarketDayLow)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-400">
-                  Variação 52 Semanas:
-                </span>
-                <span className="font-medium text-white">
-                  {stockData.fiftyTwoWeekRange}
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gray-800 border-gray-700">
-            <CardHeader>
-              <CardTitle className="text-white">
-                Métricas Fundamentalistas
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-400">
-                  P/L (Price/Earnings):
-                </span>
-                <span className="font-medium text-white">
-                  {stockData.priceEarnings.toFixed(2)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-400">
-                  LPA (Lucro por Ação):
-                </span>
-                <span className="font-medium text-white">
-                  {formatBRL(stockData.earningsPerShare)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-400">Valor de Mercado:</span>
-                <span className="font-medium text-white">
-                  {formatBRL(stockData.marketCap / 1000000000)}B
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-400">Moeda:</span>
-                <Badge variant="outline">{stockData.currency}</Badge>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Tabela detalhada */}
-        <Card className="bg-gray-800 border-gray-700">
-          <CardHeader>
-            <CardTitle className="text-white">Detalhes Diários</CardTitle>
-            <CardDescription className="text-gray-400">
-              Histórico detalhado dos últimos 5 dias de negociação
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table className="text-gray-200">
-              <TableHeader>
-                <TableRow className="border-gray-700">
-                  <TableHead className="text-gray-300">Data</TableHead>
-                  <TableHead className="text-gray-300">Abertura</TableHead>
-                  <TableHead className="text-gray-300">Máxima</TableHead>
-                  <TableHead className="text-gray-300">Mínima</TableHead>
-                  <TableHead className="text-gray-300">Fechamento</TableHead>
-                  <TableHead className="text-gray-300">Volume</TableHead>
-                  <TableHead className="text-gray-300">Variação</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {chartData.map((day, index) => {
-                  const variation =
-                    index > 0
-                      ? ((day.close - chartData[index - 1].close) /
-                          chartData[index - 1].close) *
-                        100
-                      : 0;
-                  const isPositiveVar = variation > 0;
-
-                  return (
-                    <TableRow key={index} className="border-gray-700">
-                      <TableCell className="font-medium text-white">
-                        {day.date}
-                      </TableCell>
-                      <TableCell className="text-gray-200">
-                        {formatBRL(day.open)}
-                      </TableCell>
-                      <TableCell className="text-gray-200">
-                        {formatBRL(day.high)}
-                      </TableCell>
-                      <TableCell className="text-gray-200">
-                        {formatBRL(day.low)}
-                      </TableCell>
-                      <TableCell className="font-medium text-white">
-                        {formatBRL(day.close)}
-                      </TableCell>
-                      <TableCell className="text-gray-200">
-                        {formatLargeNumber(day.volume)}
-                      </TableCell>
-                      <TableCell>
-                        {index > 0 && (
-                          <span
-                            className={
-                              isPositiveVar ? "text-green-400" : "text-red-400"
-                            }
-                          >
-                            {isPositiveVar ? "+" : ""}
-                            {variation.toFixed(2)}%
-                          </span>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+        <RangeSelector
+          onSelect={(range) => {
+            // Atualize a busca dos dados aqui
+          }}
+        />
+      </CardHeader>
+      <CardContent className="w-full  h-full">
+        <ChartContainer
+          config={{
+            close: {
+              label: "Preço de Fechamento",
+              color: "hsl(var(--chart-1))",
+            },
+          }}
+          className="h-[250px] w-full "
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={chartData}>
+              <defs>
+                <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#3B82F6" stopOpacity={0.1} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis
+                dataKey="date"
+                tick={{ fontSize: 12, fill: "#9CA3AF" }}
+                tickLine={{ stroke: "#6B7280" }}
+              />
+              <YAxis
+                domain={["dataMin - 0.1", "dataMax + 0.1"]}
+                tick={{ fontSize: 12, fill: "#9CA3AF" }}
+                tickLine={{ stroke: "#6B7280" }}
+                tickFormatter={(value) => `R$ ${value.toFixed(2)}`}
+              />
+              <Tooltip
+                content={({ active, payload, label }) => {
+                  if (active && payload && payload.length) {
+                    const data = payload[0].payload;
+                    return (
+                      <div className="bg-gray-800 p-4 border border-gray-600 rounded-lg shadow-xl">
+                        <div className="border-b border-gray-600 pb-2 mb-3">
+                          <p className="font-semibold text-white text-lg">
+                            {data.day}
+                          </p>
+                          <p className="text-sm text-gray-400">
+                            {data.fullDate}
+                          </p>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="space-y-2">
+                            <div className="flex justify-between">
+                              <span className="text-xs text-gray-400">
+                                Fechamento:
+                              </span>
+                              <span className="text-sm font-semibold text-blue-400">
+                                {formatBRL(data.close)}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-xs text-gray-400">
+                                Abertura:
+                              </span>
+                              <span className="text-sm text-gray-200">
+                                {formatBRL(data.open)}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-xs text-gray-400">
+                                Volume:
+                              </span>
+                              <span className="text-sm text-gray-200">
+                                {formatLargeNumber(data.volume)}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex justify-between">
+                              <span className="text-xs text-gray-400">
+                                Máxima:
+                              </span>
+                              <span className="text-sm text-green-400">
+                                {formatBRL(data.high)}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-xs text-gray-400">
+                                Mínima:
+                              </span>
+                              <span className="text-sm text-red-400">
+                                {formatBRL(data.low)}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-xs text-gray-400">
+                                Variação:
+                              </span>
+                              <span className="text-sm text-gray-200">
+                                {(
+                                  ((data.close - data.open) / data.open) *
+                                  100
+                                ).toFixed(2)}
+                                %
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
+              />
+              <Area
+                type="monotone"
+                dataKey="close"
+                stroke="#3B82F6"
+                strokeWidth={3}
+                fill="url(#colorPrice)"
+                dot={{ fill: "#3B82F6", strokeWidth: 2, r: 5 }}
+                activeDot={{
+                  r: 8,
+                  stroke: "#3B82F6",
+                  strokeWidth: 3,
+                  fill: "#1E40AF",
+                }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </ChartContainer>
+      </CardContent>
+    </Card>
   );
 }
