@@ -18,11 +18,15 @@ RUN npm ci
 # ===================================================================================
 FROM node:lts-alpine AS builder
 WORKDIR /app
+
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
 COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
 
 # Garante que as permissões do output estão corretas
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED 1  
 RUN npm run build
 
 # ===================================================================================
@@ -33,10 +37,6 @@ FROM node:lts-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
-
-ARG NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-
 ENV NEXT_TELEMETRY_DISABLED 1
 
 # Copia os arquivos da pasta 'standalone' gerada pelo build.
