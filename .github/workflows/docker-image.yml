@@ -23,8 +23,9 @@ jobs:
         
     - run: |
         docker build \
-            --build-arg NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }} \
-        -t ghcr.io/${{ github.repository }}:latest -f Dockerfile .
+          --build-arg NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }} \
+          -t ghcr.io/${{ github.repository }}:latest \
+          -f Dockerfile .
         
         docker tag ghcr.io/${{ github.repository }}:latest ghcr.io/${{ github.repository }}:${GITHUB_SHA}
         
