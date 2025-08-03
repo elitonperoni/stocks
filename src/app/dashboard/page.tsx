@@ -35,6 +35,7 @@ export default function Page() {
   const [stocksData, setStocksData] = useState<StocksResponse[]>([]);
 
   useEffect(() => {
+    console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
     fetchStocks(filterData);
   }, []);
 
