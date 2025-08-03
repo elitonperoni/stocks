@@ -33,6 +33,10 @@ FROM node:lts-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
+
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+
 ENV NEXT_TELEMETRY_DISABLED 1
 
 # Copia os arquivos da pasta 'standalone' gerada pelo build.
