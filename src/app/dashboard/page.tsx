@@ -10,11 +10,14 @@ import { useEffect, useState } from "react";
 import { stockApi } from "@/api";
 import { StocksResponse } from "@/models/response/stocksResponse";
 import { StockRequest } from "@/models/request/stockRequest";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import StockDashboard from "./components/detailStock";
-import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import StockDashboard from "./components/detailStock";
 
 interface PageProps {
   setor?: string;
@@ -35,29 +38,28 @@ export default function Page() {
     fetchStocks(filterData);
   }, []);
 
-  async function refetchStocks(data: PageProps ) {    
+  async function refetchStocks(data: PageProps) {
     await fetchStocks(data);
   }
 
-  async function fetchStocks(data : PageProps) {
-    debugger
+  async function fetchStocks(data: PageProps) {
+    debugger;
     try {
       setLoading(true);
 
-      const request : StockRequest = {
+      const request: StockRequest = {
         searchTerm: data.codigo,
         sector: data.setor,
         type: data.tipo,
       };
-      setStocksData([]); 
-      await stockApi.getStocks(request)      
-        .then((stocks) => {
-         setStocksData(stocks.data as StocksResponse[]); // Ensure the data is typed correctly
+      setStocksData([]);
+      await stockApi.getStocks(request).then((stocks) => {
+        setStocksData(stocks.data as StocksResponse[]); // Ensure the data is typed correctly
       });
     } catch (error) {
       setLoading(false);
       console.error("Erro ao filtrar dados:", error);
-    }    
+    }
     setLoading(false);
   }
 
@@ -75,39 +77,30 @@ export default function Page() {
         <SiteHeader />
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
-            {/* <SectionCards /> */}
-            {/* <div className="px-4 lg:px-6">
-                <ChartAreaInteractive />
-              </div> */}
 
             <div className="flex justify-end pt-4 pb-1 md:gap-1 md:pt-6 md:pb-2">
               <FilterDataTab
                 filterData={filterData}
                 onSetFilterData={(data) => setFilterData(data)}
                 onSearchStocks={refetchStocks}
-              />              
+              />
             </div>
 
-           {<DataTable 
-              data={stocksData} 
-              loading={loading} />}    
+            {<DataTable data={stocksData} loading={loading} />}
 
-
-
-    {<Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="outline">Abrir Dashboard</Button>
-      </DrawerTrigger>
-<DrawerTitle/>
-   <DrawerContent
-    className="w-[100vw] max-w-none h-screen p-0"
-  >
-    <div className="h-full overflow-y-auto p-6">
-      <StockDashboard />
-    </div>
-  </DrawerContent>
-    </Drawer>
-}           
+            {
+              <Drawer>
+                <DrawerTrigger asChild>
+                  <Button variant="outline">Abrir Dashboard</Button>
+                </DrawerTrigger>
+                <DrawerTitle />
+                <DrawerContent className="w-[100vw] max-w-none h-screen p-0">
+                  <div className="h-full overflow-y-auto p-6">
+                    <StockDashboard />
+                  </div>
+                </DrawerContent>
+              </Drawer>
+            }
             {/* <div className="px-4 lg:px-6">
                 <ChartLineInteractive />
               </div>              */}
@@ -137,7 +130,5 @@ export default function Page() {
         </div>
       </SidebarInset>
     </SidebarProvider>
-
-    
   );
 }
