@@ -14,10 +14,7 @@ import {
   Drawer,
   DrawerContent,
   DrawerTitle,
-  DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
-import { StockDetail } from "@/models/response/stockDetailResponse";
 import StockDashboard from "./components/detailStock";
 
 interface PageProps {
@@ -35,7 +32,6 @@ export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
   const [stocksData, setStocksData] = useState<StocksResponse[]>([]);
   const [isDashboardOpen, setIsDashboardOpen] = useState<boolean>(false);
-  const [dashboardLoading, setDashboardLoading] = useState<boolean>(false);
   const [selectedStock, setSelectedStock] = useState<string | null>(null);
 
   useEffect(() => {
@@ -67,27 +63,6 @@ export default function Page() {
     setLoading(false);
   }
 
-  // useEffect(() => {
-  //   const fetchSelectedStock = async () => {
-  //     debugger
-  //     if (!isDashboardOpen) return;
-  //     const code = filterData.codigo || (stocksData.length > 0 ? stocksData[0].stock : "");
-  //     if (!code) return;
-  //     try {
-  //       setDashboardLoading(true);
-        
-  //       setSelectedStock(code);
-  //     } catch (e) {
-  //       console.error("Erro ao carregar detalhe do ativo:", e);
-  //       setSelectedStock(null);
-  //     } 
-  //     finally {
-  //      // setDashboardLoading(false);
-  //     }
-  //   };
-  //   fetchSelectedStock();
-  // }, [selectedStock]);
-
   return (
     <SidebarProvider
       style={
@@ -114,10 +89,8 @@ export default function Page() {
             {
               <DataTable
                 data={stocksData}
-                loading={loading}
-                onRowClick={(row) => {
-                  debugger
-                  //setFilterData((prev) => ({ ...prev, codigo: row.stock }));                  
+                loading={loading}                
+                onRowClick={(row) => {             
                   setSelectedStock(row.stock);
                   setIsDashboardOpen(true);
                 }}
@@ -126,9 +99,7 @@ export default function Page() {
 
             {
               <Drawer direction="right" open={isDashboardOpen} onOpenChange={setIsDashboardOpen}>
-                <DrawerTrigger asChild>
-                  <Button variant="outline">Abrir Dashboard</Button>
-                </DrawerTrigger>
+                
                 <DrawerTitle />
                 <DrawerContent className="data-[vaul-drawer-direction=right]:!w-[80vw] data-[vaul-drawer-direction=left]:!w-[80vw] sm:!max-w-none">
                   <div className="h-full w-full overflow-y-auto p-6">

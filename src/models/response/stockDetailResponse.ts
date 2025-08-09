@@ -10,7 +10,7 @@ export interface HistoricalDataPrice {
 
 export interface StockDetail {
   currency: string
-  marketCap: number
+  marketCap?: number
   shortName: string
   longName: string
   regularMarketChange: number
@@ -26,8 +26,8 @@ export interface StockDetail {
   fiftyTwoWeekRange: string
   fiftyTwoWeekLow: number
   fiftyTwoWeekHigh: number
-  earningsPerShare: number
-  priceEarnings: number
+  earningsPerShare?: number
+  priceEarnings?: number
   symbol: string
   logoUrl: string
   usedInterval: string

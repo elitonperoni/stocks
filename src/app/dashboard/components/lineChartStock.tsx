@@ -20,17 +20,16 @@ import {
 import { useState } from "react";
 import { formatBRL, formatLargeNumber } from "@/utils/formt";
 import { StockDetail } from "@/models/response/stockDetailResponse";
-
-
+import { formatRangeToText } from "@/utils/formatRangeToText";
 
 type LineChartStockProps = {
   stockData: StockDetail | null; 
-  fetchStocks: (stock: string, range : string) => void
+  range: string;
 };
 
-export default function LineChartStock( { stockData, fetchStocks } : LineChartStockProps ) {
+export default function LineChartStock( { stockData, range } : LineChartStockProps ) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [rangeSelected, setRangeSelected] = useState("1d");
+
 
   // Preparar dados para o gráfico
   const chartData = stockData?.historicalDataPrice.map((item, index) => ({
@@ -51,20 +50,13 @@ export default function LineChartStock( { stockData, fetchStocks } : LineChartSt
     <Card className="w-full h-full bg-gray-800 border-gray-700">
       <CardHeader>
         <CardTitle className="text-white">
-          Histórico de Preços - Últimos 5 Dias
+          Histórico de Preços - Intervalo de {formatRangeToText(range)}
         </CardTitle>
         <CardDescription className="text-gray-400">
           Evolução do preço de fechamento da ação {stockData?.symbol}
         </CardDescription>
 
-        <RangeSelector 
-          rangeSelected={rangeSelected} 
-          onSelect={(range) => 
-          {
-            setRangeSelected(range) 
-            fetchStocks(stockData?.symbol ?? "", range)          
-          }}
-          />
+       
       </CardHeader>
       <CardContent className="w-full  h-full">
         <ChartContainer

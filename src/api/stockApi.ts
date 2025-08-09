@@ -23,7 +23,7 @@ export class StockApi {
     stock : string,
     range?: string) :Promise<AxiosResponse<StockDetail>> {
     try {
-      return await api.get(`/stocks/detail?stock=${stock}&range=${range ?? "1d"}`
+      return await api.get(`/stocks/detail?stock=${stock}&range=${range ?? "5d"}`
       );      
     } catch (error) {
       console.error('Error fetching all stocks:', error);

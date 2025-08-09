@@ -1,10 +1,14 @@
 import { Button } from "@/components/ui/button";
 
-const rangeOptions = ["1d", "5d", "1mo", "3mo"];
+const rangeOptions = ["1D", "5D", "1MO", "3MO"];
 
-export function RangeSelector({ rangeSelected, onSelect }: 
-  { rangeSelected :string, onSelect: (range: string) => void }) {
-
+export function RangeSelector({
+  rangeSelected,
+  onSelect,
+}: {
+  rangeSelected: string;
+  onSelect: (range: string) => void;
+}) {
   const handleClick = (range: string) => {
     onSelect(range);
   };
@@ -14,7 +18,7 @@ export function RangeSelector({ rangeSelected, onSelect }:
       {rangeOptions.map((range) => (
         <Button
           key={range}
-          variant="ghost" 
+          variant="ghost"
           onClick={() => handleClick(range)}
           className={`text-xs px-2 py-1 rounded-sm transition-colors ${
             rangeSelected === range

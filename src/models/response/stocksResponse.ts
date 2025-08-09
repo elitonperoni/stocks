@@ -6,6 +6,6 @@ export interface StocksResponse {
   change: number;
   volume: number;
   logo: string;
-  //sector?: string;
+  sector?: string;
   type: string;
 }
