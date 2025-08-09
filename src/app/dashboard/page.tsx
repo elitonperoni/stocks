@@ -17,6 +17,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
+import { StockDetail } from "@/models/response/stockDetailResponse";
 import StockDashboard from "./components/detailStock";
 
 interface PageProps {
@@ -33,6 +34,9 @@ export default function Page() {
   });
   const [loading, setLoading] = useState<boolean>(false);
   const [stocksData, setStocksData] = useState<StocksResponse[]>([]);
+  const [isDashboardOpen, setIsDashboardOpen] = useState<boolean>(false);
+  const [dashboardLoading, setDashboardLoading] = useState<boolean>(false);
+  const [selectedStock, setSelectedStock] = useState<string | null>(null);
 
   useEffect(() => {
     fetchStocks(filterData);
@@ -54,7 +58,7 @@ export default function Page() {
       };
       setStocksData([]);
       await stockApi.getStocks(request).then((stocks) => {
-        setStocksData(stocks.data as StocksResponse[]); // Ensure the data is typed correctly
+        setStocksData(stocks.data as StocksResponse[]); 
       });
     } catch (error) {
       setLoading(false);
@@ -62,6 +66,27 @@ export default function Page() {
     }
     setLoading(false);
   }
+
+  // useEffect(() => {
+  //   const fetchSelectedStock = async () => {
+  //     debugger
+  //     if (!isDashboardOpen) return;
+  //     const code = filterData.codigo || (stocksData.length > 0 ? stocksData[0].stock : "");
+  //     if (!code) return;
+  //     try {
+  //       setDashboardLoading(true);
+        
+  //       setSelectedStock(code);
+  //     } catch (e) {
+  //       console.error("Erro ao carregar detalhe do ativo:", e);
+  //       setSelectedStock(null);
+  //     } 
+  //     finally {
+  //      // setDashboardLoading(false);
+  //     }
+  //   };
+  //   fetchSelectedStock();
+  // }, [selectedStock]);
 
   return (
     <SidebarProvider
@@ -86,17 +111,28 @@ export default function Page() {
               />
             </div>
 
-            {<DataTable data={stocksData} loading={loading} />}
+            {
+              <DataTable
+                data={stocksData}
+                loading={loading}
+                onRowClick={(row) => {
+                  debugger
+                  //setFilterData((prev) => ({ ...prev, codigo: row.stock }));                  
+                  setSelectedStock(row.stock);
+                  setIsDashboardOpen(true);
+                }}
+              />
+            }
 
             {
-              <Drawer>
+              <Drawer direction="right" open={isDashboardOpen} onOpenChange={setIsDashboardOpen}>
                 <DrawerTrigger asChild>
                   <Button variant="outline">Abrir Dashboard</Button>
                 </DrawerTrigger>
                 <DrawerTitle />
-                <DrawerContent className="fixed inset-0 z-50 w-screen h-screen p-0 bg-background border-none before:hidden shadow-none">
-                  <div className="h-full w-full overflow-y-auto p-6 ">
-                    <StockDashboard />
+                <DrawerContent className="data-[vaul-drawer-direction=right]:!w-[80vw] data-[vaul-drawer-direction=left]:!w-[80vw] sm:!max-w-none">
+                  <div className="h-full w-full overflow-y-auto p-6">
+                    <StockDashboard stock={selectedStock || ""} />
                   </div>
                 </DrawerContent>
               </Drawer>

@@ -232,14 +232,14 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
 ];
 
-function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
+function DraggableRow({ row, onRowClick }: { row: Row<z.infer<typeof schema>>; onRowClick?: (row: StocksResponse) => void }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
     id: row.original.id,
   });
 
   return (
     <TableRow
-      onClick={() => console.log(`Row ${row.id} clicked`)}
+      onClick={() => onRowClick?.(row.original as unknown as StocksResponse)}
       data-state={row.getIsSelected() && "selected"}
       data-dragging={isDragging}
       ref={setNodeRef}
@@ -261,9 +261,11 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
 export function DataTable({
   data,
   loading = false,
+  onRowClick,
 }: {
   data: StocksResponse[];
   loading?: boolean;
+  onRowClick?: (row: StocksResponse) => void;
 }) {
   //const [data, setData] = React.useState(() => initialData);
   const [rowSelection, setRowSelection] = React.useState({});
@@ -378,10 +380,11 @@ export function DataTable({
                       strategy={verticalListSortingStrategy}
                     >
                       {table.getRowModel().rows.map((row) => (
-                        <DraggableRow 
-                          key={row.id} 
-                          row={row} 
-                          />
+                        <DraggableRow
+                          key={row.id}
+                          row={row}
+                          onRowClick={onRowClick}
+                        />
                       ))}
                     </SortableContext>
                   ) : (
