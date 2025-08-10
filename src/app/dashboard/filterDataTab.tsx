@@ -7289,7 +7289,7 @@ const stocks = [
   }
 ];
 
-const availableStockTypes = [
+export const availableStockTypes = [
   {
     value: "stock",
     label: "Ações",

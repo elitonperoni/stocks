@@ -5,7 +5,7 @@ import { DataTable } from "@/components/data-table";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
-import FilterDataTab from "./filterDataTab";
+import FilterDataTab, { availableStockTypes } from "./filterDataTab";
 import { useEffect, useState } from "react";
 import { stockApi } from "@/api";
 import { StocksResponse } from "@/models/response/stocksResponse";
@@ -27,7 +27,7 @@ export default function Page() {
   const [filterData, setFilterData] = useState<PageProps>({
     setor: "",
     codigo: "",
-    tipo: "",
+    tipo: "", 
   });
   const [loading, setLoading] = useState<boolean>(false);
   const [stocksData, setStocksData] = useState<StocksResponse[]>([]);
