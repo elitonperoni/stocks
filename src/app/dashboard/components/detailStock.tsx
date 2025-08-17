@@ -18,6 +18,7 @@ import LoadingSpinner from "@/components/ui/loadingSpinner";
 import { StockDetail } from "@/models/response/stockDetailResponse";
 import { stockApi } from "@/api";
 import { RangeSelector } from "./rangeSelector";
+import NewsCard from "./newsCard";
 
 export default function StockDashboard({ stock }: { stock: string }) {
   const [stocksDetailData, setStocksDetailData] = useState<StockDetail | null>(
@@ -38,6 +39,7 @@ export default function StockDashboard({ stock }: { stock: string }) {
 
       setStocksDetailData(null);
       await stockApi.getStocksDetail(stock, range).then((stocks) => {
+        console.log("Stocks Detail Data:", stocks.data);
         setStocksDetailData(stocks.data);
         setLoading(false);
       });
@@ -126,7 +128,8 @@ export default function StockDashboard({ stock }: { stock: string }) {
             <CardContent>
               <div className="text-2xl font-bold text-white">
                 {stocksDetailData
-                  ? formatBRL(stocksDetailData?.marketCap ?? 0 / 1000000000) + " B"
+                  ? formatBRL(stocksDetailData?.marketCap ?? 0 / 1000000000) +
+                    " B"
                   : 0}
               </div>
               <p className="text-xs text-gray-400">Market Cap</p>
@@ -158,7 +161,7 @@ export default function StockDashboard({ stock }: { stock: string }) {
         ) : (
           <>
             <h2 className="text-xl font-semibold text-white">
-              Evolução do Preço 
+              Evolução do Preço
             </h2>
 
             <div style={{ paddingInline: 0 }}>
@@ -275,7 +278,8 @@ export default function StockDashboard({ stock }: { stock: string }) {
                 <span className="text-sm text-gray-400">Valor de Mercado:</span>
                 <span className="font-medium text-white">
                   {stocksDetailData
-                    ? formatBRL(stocksDetailData?.marketCap ?? 0 / 1000000000) + " B"
+                    ? formatBRL(stocksDetailData?.marketCap ?? 0 / 1000000000) +
+                      " B"
                     : 0}
                 </span>
               </div>
@@ -285,8 +289,142 @@ export default function StockDashboard({ stock }: { stock: string }) {
               </div>
             </CardContent>
           </Card>
+
+         
         </div>
+
+
+   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card className="bg-gray-800 border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-white">
+                Informações da Sessão
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-sm text-gray-400">Abertura:</span>
+                <span className="font-medium text-white">
+                  {stocksDetailData
+                    ? formatBRL(stocksDetailData.regularMarketOpen)
+                    : 0}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-gray-400">
+                  Fechamento Anterior:
+                </span>
+                <span className="font-medium text-white">
+                  {stocksDetailData
+                    ? formatBRL(stocksDetailData.regularMarketPreviousClose)
+                    : 0}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-gray-400">Máxima do Dia:</span>
+                <span className="font-medium text-white">
+                  {stocksDetailData
+                    ? formatBRL(stocksDetailData.regularMarketDayHigh)
+                    : 0}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-gray-400">Mínima do Dia:</span>
+                <span className="font-medium text-white">
+                  {stocksDetailData
+                    ? formatBRL(stocksDetailData.regularMarketDayLow)
+                    : 0}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-gray-400">
+                  Variação 52 Semanas:
+                </span>
+                <span className="font-medium text-white">
+                  {stocksDetailData ? stocksDetailData?.fiftyTwoWeekRange : 0}
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gray-800 border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-white">
+                Métricas Fundamentalistas
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-sm text-gray-400">
+                  P/L (Price/Earnings):
+                </span>
+                <span className="font-medium text-white">
+                  {stocksDetailData
+                    ? stocksDetailData.priceEarnings?.toFixed(2)
+                    : 0}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-gray-400">
+                  LPA (Lucro por Ação):
+                </span>
+                <span className="font-medium text-white">
+                  {stocksDetailData
+                    ? formatBRL(stocksDetailData?.earningsPerShare ?? 0)
+                    : 0}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-gray-400">Valor de Mercado:</span>
+                <span className="font-medium text-white">
+                  {stocksDetailData
+                    ? formatBRL(stocksDetailData?.marketCap ?? 0 / 1000000000) +
+                      " B"
+                    : 0}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-gray-400">Moeda:</span>
+                <Badge variant="outline">{stocksDetailData?.currency}</Badge>
+              </div>
+            </CardContent>
+          </Card>
+
+         
+        </div>
+
+
+         <div className="flex justify-center p-8">
+            {stocksDetailData?.linksNews &&
+            stocksDetailData.linksNews.length > 0 ? (
+              <div className="grid grid-cols-4 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {stocksDetailData?.linksNews.map((news, index) => (
+                  <NewsCard
+                    key={index}
+                    title={news.title}
+                    source={news.source?.name || "Fonte desconhecida"}
+                    date={news.date}
+                    link={news.link}
+                    thumbnail={news.thumbnail}
+                    subtitle={news.subtitle}
+                  />
+                ))}
+              </div>
+            ) : (
+              <></>
+            )}
+          </div>
       </div>
     </div>
   );
 }
+
+const myNewsData = {
+  title:
+    "Mercado volta a olhar ETF IVVB11 atrelado à bolsa dos EUA com negociações comerciais",
+  source: "InfoMoney",
+  link: "https://www.infomoney.com.br/mercados/mercado-volta-a-olhar-ativos-atrelados-a-bolsa-dos-eua-com-avanco-de-acordos-la-fora/",
+  thumbnail:
+    "https://www.infomoney.com.br/wp-content/uploads/2025/03/Captura-de-tela-2025-03-04-135030.png?fit=919%2C612&quality=50&strip=all",
+  date: "05/09/2025, 07:00 AM, +0000 UTC",
+};
