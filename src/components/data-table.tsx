@@ -96,12 +96,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 import { formatCurrency } from "@/utils/formatCurrency";
 import labelValuePositiveNegative from "./labelValuePositiveNegative";
-import LoadingSpinner from "./ui/loadingSpinner";
 import { StocksResponse } from "@/models/response/stocksResponse";
+import { Skeleton } from "./ui/skeleton";
 
 export const schema = z.object({
   id: z.number(),
@@ -118,14 +118,15 @@ export const schema = z.object({
 const columns: ColumnDef<StocksResponse>[] = [
   {
     accessorKey: "avatarUrl",
-    header: "----------",
-    cell: ({ row }) => {
-      return (
-        <Avatar className="w-14 h-14">
-          <AvatarImage src={row.original.logo} className="w-14 h-14" />
-        </Avatar>
-      );
-    },
+    header: () => <span className="w-[100px] invisible">-------------</span>,
+    cell: ({ row }) => (
+      <Avatar className="!w-[70px] !h-[70px] shrink-0 rounded-md">
+        <AvatarImage
+          src={row.original.logo}
+          className="!w-[70px] !h-[70px] object-cover"
+        />
+      </Avatar>
+    ),
     enableHiding: false,
   },
   {
@@ -212,7 +213,13 @@ const columns: ColumnDef<StocksResponse>[] = [
   },
 ];
 
-function DraggableRow({ row, onRowClick }: { row: Row<z.infer<typeof schema>>; onRowClick?: (row: StocksResponse) => void }) {
+function DraggableRow({
+  row,
+  onRowClick,
+}: {
+  row: Row<z.infer<typeof schema>>;
+  onRowClick?: (row: StocksResponse) => void;
+}) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
     id: row.original.id,
   });
@@ -227,7 +234,7 @@ function DraggableRow({ row, onRowClick }: { row: Row<z.infer<typeof schema>>; o
       style={{
         transform: CSS.Transform.toString(transform),
         transition: transition,
-        cursor: 'pointer' 
+        cursor: "pointer",
       }}
     >
       {row.getVisibleCells().map((cell) => (
@@ -296,7 +303,6 @@ export function DataTable({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
-
   return (
     <Tabs
       defaultValue="outline"
@@ -317,7 +323,7 @@ export function DataTable({
             <Table>
               <TableHeader className="bg-muted sticky top-0 z-10">
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id} >
+                  <TableRow key={headerGroup.id}>
                     {headerGroup.headers.map((header) => {
                       return (
                         <TableHead key={header.id} colSpan={header.colSpan}>
@@ -335,12 +341,32 @@ export function DataTable({
               </TableHeader>
 
               {loading ? (
-                <TableBody className="**:data-[slot=table-cell]:first:w-8">
-                  <TableRow >
-                    <TableCell colSpan={columns.length} className="h-24">
-                      <LoadingSpinner text="Carregando dados..." />
-                    </TableCell>
-                  </TableRow>
+                <TableBody>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <TableRow key={i}>
+                      <TableCell>
+                        <Skeleton className="h-[70px] w-[70px] rounded-md" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-20" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-32" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-24" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-16" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-4 w-28" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-8 w-8 rounded-md" />
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               ) : (
                 <TableBody className="**:data-[slot=table-cell]:first:w-8">
@@ -350,7 +376,7 @@ export function DataTable({
                       strategy={verticalListSortingStrategy}
                     >
                       {table.getRowModel().rows.map((row) => (
-                        <DraggableRow 
+                        <DraggableRow
                           key={row.id}
                           row={row}
                           onRowClick={onRowClick}

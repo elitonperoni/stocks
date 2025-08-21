@@ -10,11 +10,7 @@ import { useEffect, useState } from "react";
 import { stockApi } from "@/api";
 import { StocksResponse } from "@/models/response/stocksResponse";
 import { StockRequest } from "@/models/request/stockRequest";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerTitle,
-} from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import StockDashboard from "./components/detailStock";
 
 interface PageProps {
@@ -27,7 +23,7 @@ export default function Page() {
   const [filterData, setFilterData] = useState<PageProps>({
     setor: "",
     codigo: "",
-    tipo: "", 
+    tipo: "",
   });
   const [loading, setLoading] = useState<boolean>(false);
   const [stocksData, setStocksData] = useState<StocksResponse[]>([]);
@@ -54,7 +50,7 @@ export default function Page() {
       };
       setStocksData([]);
       await stockApi.getStocks(request).then((stocks) => {
-        setStocksData(stocks.data as StocksResponse[]); 
+        setStocksData(stocks.data as StocksResponse[]);
       });
     } catch (error) {
       setLoading(false);
@@ -77,8 +73,11 @@ export default function Page() {
         <SiteHeader />
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
+            <h2 className="flex justify-start pt-4 pb-1 md:gap-1 md:pt-6 md:pb-2 text-3xl font-semibold tracking-tight first:mt-0 ml-4">
+              Busque por ativos listados na B3
+            </h2>
 
-            <div className="flex justify-end pt-4 pb-1 md:gap-1 md:pt-6 md:pb-2">
+            <div className="flex justify-start pt-4 pb-1 md:gap-1 md:pt-6 md:pb-2">
               <FilterDataTab
                 filterData={filterData}
                 onSetFilterData={(data) => setFilterData(data)}
@@ -89,8 +88,8 @@ export default function Page() {
             {
               <DataTable
                 data={stocksData}
-                loading={loading}                
-                onRowClick={(row) => {             
+                loading={loading}
+                onRowClick={(row) => {
                   setSelectedStock(row.stock);
                   setIsDashboardOpen(true);
                 }}
@@ -98,8 +97,11 @@ export default function Page() {
             }
 
             {
-              <Drawer direction="right" open={isDashboardOpen} onOpenChange={setIsDashboardOpen}>
-                
+              <Drawer
+                direction="right"
+                open={isDashboardOpen}
+                onOpenChange={setIsDashboardOpen}
+              >
                 <DrawerTitle />
                 <DrawerContent className="data-[vaul-drawer-direction=right]:!w-[80vw] data-[vaul-drawer-direction=left]:!w-[80vw] sm:!max-w-none">
                   <div className="h-full w-full overflow-y-auto p-6">

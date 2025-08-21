@@ -14,8 +14,7 @@ import { useEffect, useState } from "react";
 import { formatBRL, formatLargeNumber } from "@/utils/formt";
 import LineChartStock from "./lineChartStock";
 import VolumeChartStock from "./volumeChartStock";
-import LoadingSpinner from "@/components/ui/loadingSpinner";
-import { StockDetail } from "@/models/response/stockDetailResponse";
+import { LinksNews, StockDetail } from "@/models/response/stockDetailResponse";
 import { stockApi } from "@/api";
 import { RangeSelector } from "./rangeSelector";
 import NewsCard from "./newsCard";
@@ -24,7 +23,9 @@ export default function StockDashboard({ stock }: { stock: string }) {
   const [stocksDetailData, setStocksDetailData] = useState<StockDetail | null>(
     null
   );
+  const [stocksNews, setStocksNews] = useState<LinksNews[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingNews, setLoadingNews] = useState<boolean>(false);
   const [rangeSelected, setRangeSelected] = useState("5D");
 
   useEffect(() => {
@@ -36,16 +37,22 @@ export default function StockDashboard({ stock }: { stock: string }) {
   async function fetchStocks(stock: string, range?: string) {
     try {
       setLoading(true);
-
+      setLoadingNews(true);
       setStocksDetailData(null);
+      setStocksNews([]);
+
       await stockApi.getStocksDetail(stock, range).then((stocks) => {
-        console.log("Stocks Detail Data:", stocks.data);
         setStocksDetailData(stocks.data);
         setLoading(false);
       });
-    } catch (error) {
-      console.error("Failed to fetch stock details:", error);
+
+      await stockApi.getStocksNews(stock).then((stocks) => {
+        setStocksNews(stocks.data);
+        setLoadingNews(false);
+      });
+    } catch {
       setLoading(false);
+      setLoadingNews(false);
     }
   }
 
@@ -58,11 +65,13 @@ export default function StockDashboard({ stock }: { stock: string }) {
       <div className="w-full h-full space-y-6 p-6">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <img
-            src={stocksDetailData?.logoUrl}
-            alt={stocksDetailData?.symbol}
-            className="w-12 h-12"
-          />
+          {!loading && stocksDetailData?.logoUrl && (
+            <img
+              src={stocksDetailData?.logoUrl}
+              alt={stocksDetailData?.symbol}
+              className="w-12 h-12"
+            />
+          )}
           <div>
             <h1 className="text-3xl font-bold text-white">
               {stocksDetailData?.shortName}
@@ -106,7 +115,7 @@ export default function StockDashboard({ stock }: { stock: string }) {
               <CardTitle className="text-sm font-medium text-white">
                 Volume R$
               </CardTitle>
-              <Volume2 className="h-4 w-4 text-gray-400" />
+              <DollarSign className="h-4 w-4 text-gray-400" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">
@@ -128,7 +137,7 @@ export default function StockDashboard({ stock }: { stock: string }) {
             <CardContent>
               <div className="text-2xl font-bold text-white">
                 {stocksDetailData
-                  ? formatBRL(stocksDetailData?.marketCap ?? 0 / 1000000000) +
+                  ? formatBRL((stocksDetailData?.marketCap ?? 0) / 1000000000) +
                     " B"
                   : 0}
               </div>
@@ -141,7 +150,7 @@ export default function StockDashboard({ stock }: { stock: string }) {
               <CardTitle className="text-sm font-medium text-white">
                 P/L
               </CardTitle>
-              <Calendar className="h-4 w-4 text-gray-400" />
+              <DollarSign className="h-4 w-4 text-gray-400" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">
@@ -149,14 +158,68 @@ export default function StockDashboard({ stock }: { stock: string }) {
                   ? stocksDetailData.priceEarnings?.toFixed(2)
                   : 0}
               </div>
-              <p className="text-xs text-gray-400">Price/Earnings</p>
+              <p className="text-xs text-gray-400">Preço/Lucro</p>
             </CardContent>
           </Card>
         </div>
 
         {loading ? (
-          <div className="w-full py-8">
-            <LoadingSpinner text="Carregando dados do ativo..." />
+          <div className="w-full space-y-6">
+            {/* Skeleton Header */}
+            <div className="flex items-center gap-4 mb-8 animate-pulse">
+              <div className="w-12 h-12 bg-gray-700 rounded-full"></div>
+              <div className="flex flex-col gap-2">
+                <div className="h-6 w-40 bg-gray-700 rounded"></div>
+                <div className="h-4 w-32 bg-gray-600 rounded"></div>
+              </div>
+            </div>
+
+            {/* Skeleton Métricas principais */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[...Array(4)].map((_, i) => (
+                <Card
+                  key={i}
+                  className="bg-gray-800 border-gray-700 animate-pulse"
+                >
+                  <CardHeader className="flex justify-between pb-2">
+                    <div className="h-4 w-20 bg-gray-700 rounded"></div>
+                    <div className="h-4 w-4 bg-gray-700 rounded-full"></div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-8 w-20 bg-gray-700 rounded mb-2"></div>
+                    <div className="h-4 w-12 bg-gray-600 rounded"></div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Skeleton gráficos */}
+            <div className="space-y-6">
+              <div className="h-64 bg-gray-700 rounded animate-pulse"></div>
+              <div className="h-32 bg-gray-700 rounded animate-pulse"></div>
+            </div>
+
+            {/* Skeleton cards de informações adicionais */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {[...Array(2)].map((_, i) => (
+                <Card
+                  key={i}
+                  className="bg-gray-800 border-gray-700 animate-pulse"
+                >
+                  <CardHeader>
+                    <div className="h-5 w-32 bg-gray-700 rounded"></div>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {[...Array(5)].map((_, j) => (
+                      <div key={j} className="flex justify-between">
+                        <div className="h-4 w-24 bg-gray-600 rounded"></div>
+                        <div className="h-4 w-16 bg-gray-700 rounded"></div>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         ) : (
           <>
@@ -256,7 +319,7 @@ export default function StockDashboard({ stock }: { stock: string }) {
             <CardContent className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-sm text-gray-400">
-                  P/L (Price/Earnings):
+                  P/L (Preço/Lucro):
                 </span>
                 <span className="font-medium text-white">
                   {stocksDetailData
@@ -278,8 +341,9 @@ export default function StockDashboard({ stock }: { stock: string }) {
                 <span className="text-sm text-gray-400">Valor de Mercado:</span>
                 <span className="font-medium text-white">
                   {stocksDetailData
-                    ? formatBRL(stocksDetailData?.marketCap ?? 0 / 1000000000) +
-                      " B"
+                    ? formatBRL(
+                        (stocksDetailData?.marketCap ?? 0) / 1000000000
+                      ) + " B"
                     : 0}
                 </span>
               </div>
@@ -289,12 +353,9 @@ export default function StockDashboard({ stock }: { stock: string }) {
               </div>
             </CardContent>
           </Card>
-
-         
         </div>
 
-
-   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader>
               <CardTitle className="text-white">
@@ -356,7 +417,7 @@ export default function StockDashboard({ stock }: { stock: string }) {
             <CardContent className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-sm text-gray-400">
-                  P/L (Price/Earnings):
+                  P/L (Preço/Lucro):
                 </span>
                 <span className="font-medium text-white">
                   {stocksDetailData
@@ -378,8 +439,9 @@ export default function StockDashboard({ stock }: { stock: string }) {
                 <span className="text-sm text-gray-400">Valor de Mercado:</span>
                 <span className="font-medium text-white">
                   {stocksDetailData
-                    ? formatBRL(stocksDetailData?.marketCap ?? 0 / 1000000000) +
-                      " B"
+                    ? formatBRL(
+                        (stocksDetailData?.marketCap ?? 0) / 1000000000
+                      ) + " B"
                     : 0}
                 </span>
               </div>
@@ -389,42 +451,39 @@ export default function StockDashboard({ stock }: { stock: string }) {
               </div>
             </CardContent>
           </Card>
-
-         
         </div>
 
-
-         <div className="flex justify-center p-8">
-            {stocksDetailData?.linksNews &&
-            stocksDetailData.linksNews.length > 0 ? (
-              <div className="grid grid-cols-4 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {stocksDetailData?.linksNews.map((news, index) => (
-                  <NewsCard
-                    key={index}
-                    title={news.title}
-                    source={news.source?.name || "Fonte desconhecida"}
-                    date={news.date}
-                    link={news.link}
-                    thumbnail={news.thumbnail}
-                    subtitle={news.subtitle}
-                  />
-                ))}
-              </div>
-            ) : (
-              <></>
-            )}
-          </div>
+        <div className="flex justify-center p-8">
+          {!loadingNews && stocksNews ? (
+            <div className="grid grid-cols-4 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {stocksNews.map((news, index) => (
+                <NewsCard
+                  key={index}
+                  title={news.title}
+                  source={news.source?.name || "Fonte desconhecida"}
+                  date={news.date}
+                  link={news.link}
+                  thumbnail={news.thumbnail}
+                  subtitle={news.subtitle}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-4 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="animate-pulse flex flex-col gap-2 bg-gray-800 rounded-md p-4"
+                >
+                  <div className="h-32 bg-gray-700 rounded-md w-full" />
+                  <div className="h-4 bg-gray-600 rounded w-3/4" />
+                  <div className="h-3 bg-gray-600 rounded w-1/2" />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 }
-
-const myNewsData = {
-  title:
-    "Mercado volta a olhar ETF IVVB11 atrelado à bolsa dos EUA com negociações comerciais",
-  source: "InfoMoney",
-  link: "https://www.infomoney.com.br/mercados/mercado-volta-a-olhar-ativos-atrelados-a-bolsa-dos-eua-com-avanco-de-acordos-la-fora/",
-  thumbnail:
-    "https://www.infomoney.com.br/wp-content/uploads/2025/03/Captura-de-tela-2025-03-04-135030.png?fit=919%2C612&quality=50&strip=all",
-  date: "05/09/2025, 07:00 AM, +0000 UTC",
-};
