@@ -12,27 +12,40 @@ import { StocksResponse } from "@/models/response/stocksResponse";
 import { StockRequest } from "@/models/request/stockRequest";
 import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import StockDashboard from "./components/detailStock";
+import { useForm } from "react-hook-form";
 
+interface FilterFormValues {
+  setor: string;
+  codigo: string;
+  tipo: string;
+  selectedStock?: string;
+}
 interface PageProps {
   setor?: string;
   codigo?: string;
   tipo?: string;
+  selectedStock?: string;
 }
 
 export default function Page() {
-  const [filterData, setFilterData] = useState<PageProps>({
-    setor: "",
-    codigo: "",
-    tipo: "",
+  const form = useForm<FilterFormValues>({
+    defaultValues: {
+      setor: "",
+      codigo: "",
+      tipo: "",
+      selectedStock: "",
+    },
   });
+
   const [loading, setLoading] = useState<boolean>(false);
   const [stocksData, setStocksData] = useState<StocksResponse[]>([]);
   const [isDashboardOpen, setIsDashboardOpen] = useState<boolean>(false);
-  const [selectedStock, setSelectedStock] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchStocks(filterData);
+    fetchStocks(form.getValues());
   }, []);
+
+  const selectedStock = form.watch("selectedStock");
 
   async function refetchStocks(data: PageProps) {
     await fetchStocks(data);
@@ -79,8 +92,10 @@ export default function Page() {
 
             <div className="flex justify-start pt-4 pb-1 md:gap-1 md:pt-6 md:pb-2">
               <FilterDataTab
-                filterData={filterData}
-                onSetFilterData={(data) => setFilterData(data)}
+                filterData={form.getValues()}
+                onSetFilterData={(data) =>
+                  form.setValue("selectedStock", data.selectedStock)
+                }
                 onSearchStocks={refetchStocks}
               />
             </div>
@@ -90,7 +105,7 @@ export default function Page() {
                 data={stocksData}
                 loading={loading}
                 onRowClick={(row) => {
-                  setSelectedStock(row.stock);
+                  form.setValue("selectedStock", row.stock);
                   setIsDashboardOpen(true);
                 }}
               />
@@ -105,7 +120,9 @@ export default function Page() {
                 <DrawerTitle />
                 <DrawerContent className="data-[vaul-drawer-direction=right]:!w-[80vw] data-[vaul-drawer-direction=left]:!w-[80vw] sm:!max-w-none">
                   <div className="h-full w-full overflow-y-auto p-6">
-                    <StockDashboard stock={selectedStock || ""} />
+                    {selectedStock && selectedStock !== "" && (
+                      <StockDashboard stock={selectedStock} />
+                    )}
                   </div>
                 </DrawerContent>
               </Drawer>

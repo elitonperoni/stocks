@@ -19,16 +19,15 @@ import { stockApi } from "@/api";
 import { RangeSelector } from "./rangeSelector";
 import NewsCard from "./newsCard";
 
-export default function StockDashboard({ stock }: { stock: string }) {
-  const [stocksDetailData, setStocksDetailData] = useState<StockDetail | null>(
-    null
-  );
+export default function StockDashboard({ stock }: Readonly<{ stock: string }>) {
+  const [stocksDetailData, setStocksDetailData] = useState<StockDetail | null>(null);
   const [stocksNews, setStocksNews] = useState<LinksNews[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingNews, setLoadingNews] = useState<boolean>(false);
   const [rangeSelected, setRangeSelected] = useState("5D");
 
   useEffect(() => {
+    debugger
     if (stock && !loading) {
       fetchStocks(stock, rangeSelected.toLowerCase());
     }
@@ -43,13 +42,13 @@ export default function StockDashboard({ stock }: { stock: string }) {
 
       await stockApi.getStocksDetail(stock, range).then((stocks) => {
         setStocksDetailData(stocks.data);
-        setLoading(false);
+      setLoading(false);
       });
 
-      await stockApi.getStocksNews(stock).then((stocks) => {
-        setStocksNews(stocks.data);
-        setLoadingNews(false);
-      });
+      // await stockApi.getStocksNews(stock).then((stocks) => {
+      //   setStocksNews(stocks.data);
+      //   setLoadingNews(false);
+      // });
     } catch {
       setLoading(false);
       setLoadingNews(false);
@@ -120,7 +119,7 @@ export default function StockDashboard({ stock }: { stock: string }) {
             <CardContent>
               <div className="text-2xl font-bold text-white">
                 {stocksDetailData
-                  ? formatLargeNumber(stocksDetailData.regularMarketVolume)
+                  ? formatLargeNumber(stocksDetailData?.regularMarketVolume)
                   : 0}
               </div>
               <p className="text-xs text-gray-400">Ações negociadas</p>
@@ -155,7 +154,7 @@ export default function StockDashboard({ stock }: { stock: string }) {
             <CardContent>
               <div className="text-2xl font-bold text-white">
                 {stocksDetailData
-                  ? stocksDetailData.priceEarnings?.toFixed(2)
+                  ? stocksDetailData?.priceEarnings?.toFixed(2)
                   : 0}
               </div>
               <p className="text-xs text-gray-400">Preço/Lucro</p>
@@ -228,22 +227,22 @@ export default function StockDashboard({ stock }: { stock: string }) {
             </h2>
 
             <div style={{ paddingInline: 0 }}>
-              <RangeSelector
-                rangeSelected={rangeSelected}
-                onSelect={(range) => {
-                  setRangeSelected(range);
-                  fetchStocks(
-                    stocksDetailData?.symbol ?? "",
-                    range.toLowerCase()
-                  );
-                }}
-              />
+                <RangeSelector
+                  rangeSelected={rangeSelected}
+                  onSelect={(range) => {
+                    setRangeSelected(range);
+                    fetchStocks(
+                      stock,
+                      range.toLowerCase()
+                    );
+                  }}
+                />
             </div>
 
             <Card className="bg-gray-800 border-gray-700">
               <div style={{ paddingInline: 10 }}>
                 <LineChartStock
-                  stockData={stocksDetailData ?? null}
+                  stockData={stocksDetailData}
                   range={rangeSelected}
                 />
               </div>

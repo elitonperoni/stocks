@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { RangeSelector } from "./rangeSelector";
+import isEmpty from 'lodash/isEmpty';
 import { ChartContainer } from "@/components/ui/chart";
 import {
   Area,
@@ -23,40 +23,51 @@ import { StockDetail } from "@/models/response/stockDetailResponse";
 import { formatRangeToText } from "@/utils/formatRangeToText";
 
 type LineChartStockProps = {
-  stockData: StockDetail | null; 
-  range: string;
+  readonly stockData: StockDetail | null;
+  readonly range: string;
 };
 
-export default function LineChartStock( { stockData, range } : LineChartStockProps ) {
+export default function LineChartStock({
+  stockData,
+  range,
+}: LineChartStockProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
+  const chartData = !isEmpty(stockData) ? stockData?.historicalDataPrice.map((item, index) => {
+    const dateObject = new Date(item.date * 1000);
 
-  // Preparar dados para o gráfico
-  const chartData = stockData?.historicalDataPrice.map((item, index) => ({
-    day: `Dia ${index + 1}`,
-    date: new Date(item.date * 1000).toLocaleDateString("pt-BR", {
-      day: "2-digit",
-      month: "2-digit",
-    }),
-    fullDate: new Date(item.date * 1000).toLocaleDateString("pt-BR"),
-    close: item.close,
-    open: item.open,
-    high: item.high,
-    low: item.low,
-    volume: item.volume,
-  }));
+    const formattedDate =
+      range === "1D"
+        ? dateObject.toLocaleTimeString("pt-BR", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })
+        : dateObject.toLocaleDateString("pt-BR", {
+            day: "2-digit",
+            month: "2-digit",
+          });
+    return {
+      day: `Dia ${index + 1}`,
+      date: formattedDate, 
+      fullDate: dateObject.toLocaleDateString("pt-BR"),
+      close: item.close,
+      open: item.open,
+      high: item.high,
+      low: item.low,
+      volume: item.volume,
+    };
+  }) : [];
 
   return (
     <Card className="w-full h-full bg-gray-800 border-gray-700">
       <CardHeader>
         <CardTitle className="text-white">
-          Histórico de Preços - Intervalo de {formatRangeToText(range)}
+          Histórico de Preços - Intervalo de {formatRangeToText(range)} 
+          {(range === "1D") && (chartData && chartData?.length > 0 ? (` - ${chartData[0]?.fullDate.toString() ?? ""}`) : null)}
         </CardTitle>
         <CardDescription className="text-gray-400">
           Evolução do preço de fechamento da ação {stockData?.symbol}
         </CardDescription>
-
-       
       </CardHeader>
       <CardContent className="w-full  h-full">
         <ChartContainer
