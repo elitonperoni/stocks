@@ -1,7 +1,7 @@
 
 import { StockRequest } from '@/models/request/stockRequest';
-import  api  from './api';
 import { LinksNews, StockDetail } from '@/models/response/stockDetailResponse';
+import  api  from './api';
 import { AxiosResponse } from 'axios';
 
 const baseRoute : string = "stocks"
