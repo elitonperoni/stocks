@@ -41,14 +41,14 @@ export default function StockDashboard({ stock }: Readonly<{ stock: string }>) {
       setStocksNews([]);
 
       await stockApi.getStocksDetail(stock, range).then((stocks) => {
-        setStocksDetailData(stocks.data);
-      setLoading(false);
-      });
+        setStocksDetailData(stocks.data);      
+      })
+      .finally(() => { setLoading(false); });
 
-      // await stockApi.getStocksNews(stock).then((stocks) => {
-      //   setStocksNews(stocks.data);
-      //   setLoadingNews(false);
-      // });
+      await stockApi.getStocksNews(stock).then((stocks) => {
+        setStocksNews(stocks.data);        
+      })
+      .finally(() => { setLoadingNews(false); });
     } catch {
       setLoading(false);
       setLoadingNews(false);

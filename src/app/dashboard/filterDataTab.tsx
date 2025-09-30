@@ -60,10 +60,10 @@ export default function FilterDataTab({
 
   return (
     <div className="flex gap-4">
-      <div className="p-6 rounded-xl shadow-md">
+      <div className="rounded-xl shadow-md">
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
-            <Button variant="outline" style={{ cursor: "pointer" }}>Abrir Filtros</Button>
+            <Button variant="outline" style={{ cursor: "pointer", marginLeft: "2rem" }}>Abrir Filtros</Button>
           </PopoverTrigger>
           <PopoverContent className="w-96">
             <Form {...form}>

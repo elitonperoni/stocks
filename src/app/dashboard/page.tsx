@@ -62,75 +62,114 @@ export default function Page() {
         type: data.tipo,
       };
       setStocksData([]);
-      await stockApi.getStocks(request).then((stocks) => {
-        setStocksData(stocks.data as StocksResponse[]);
-      });
-    } catch (error) {
+      await stockApi
+        .getStocks(request)
+        .then((stocks) => {
+          setStocksData(stocks.data as StocksResponse[]);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } catch {
       setLoading(false);
-      console.error("Erro ao filtrar dados:", error);
     }
-    setLoading(false);
   }
 
   return (
-    <SidebarProvider
-      style={
+    // <SidebarProvider
+    //   style={
+    //     {
+    //       "--sidebar-width": "calc(var(--spacing) * 72)",
+    //       "--header-height": "calc(var(--spacing) * 12)",
+    //     } as React.CSSProperties
+    //   }
+    // >
+    //   <AppSidebar variant="inset" />
+    //   <SidebarInset>
+    //     <SiteHeader />
+    <div className="flex flex-1 flex-col">
+      <div className="@container/main flex flex-1 flex-col gap-2">
+        <div className="flex flex-col items-start pt-6 pb-2 px-4">
+          <div className="flex items-center gap-3 mb-1 ml-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-8 w-8 text-blue-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 17v-6a2 2 0 012-2h2a2 2 0 012 2v6m0 0V9a2 2 0 012-2h2a2 2 0 012 2v8m0 0V5a2 2 0 012-2h2a2 2 0 012 2v12"
+              />
+            </svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-7 w-7 text-green-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3zm0 10c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8z"
+              />
+            </svg>
+            <span className="text-4xl font-bold text-white tracking-tight">
+              Bolsa de Valores do Brasil
+            </span>
+          </div>
+          <span className="text-lg text-gray-400 font-medium mt-1 ml-4">
+            Acompanhe cotações, gráficos e notícias dos ativos listados na B3 em
+            tempo real.
+          </span>
+        </div>
+
+        <div className="flex justify-start pt-4 pb-1 md:gap-1 md:pt-6 md:pb-2">
+          <FilterDataTab
+            filterData={form.getValues()}
+            onSetFilterData={(data) =>
+              form.setValue("selectedStock", data.selectedStock)
+            }
+            onSearchStocks={refetchStocks}
+          />
+        </div>
+
         {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <AppSidebar variant="inset" />
-      <SidebarInset>
-        <SiteHeader />
-        <div className="flex flex-1 flex-col">
-          <div className="@container/main flex flex-1 flex-col gap-2">
-            <h2 className="flex justify-start pt-4 pb-1 md:gap-1 md:pt-6 md:pb-2 text-3xl font-semibold tracking-tight first:mt-0 ml-4">
-              Busque por ativos listados na B3
-            </h2>
+          <DataTable
+            data={stocksData}
+            loading={loading}
+            onRowClick={(row) => {
+              form.setValue("selectedStock", row.stock);
+              setIsDashboardOpen(true);
+            }}
+          />
+        }
 
-            <div className="flex justify-start pt-4 pb-1 md:gap-1 md:pt-6 md:pb-2">
-              <FilterDataTab
-                filterData={form.getValues()}
-                onSetFilterData={(data) =>
-                  form.setValue("selectedStock", data.selectedStock)
-                }
-                onSearchStocks={refetchStocks}
-              />
-            </div>
-
-            {
-              <DataTable
-                data={stocksData}
-                loading={loading}
-                onRowClick={(row) => {
-                  form.setValue("selectedStock", row.stock);
-                  setIsDashboardOpen(true);
-                }}
-              />
-            }
-
-            {
-              <Drawer
-                direction="right"
-                open={isDashboardOpen}
-                onOpenChange={setIsDashboardOpen}
-              >
-                <DrawerTitle />
-                <DrawerContent className="data-[vaul-drawer-direction=right]:!w-[80vw] data-[vaul-drawer-direction=left]:!w-[80vw] sm:!max-w-none">
-                  <div className="h-full w-full overflow-y-auto p-6">
-                    {selectedStock && selectedStock !== "" && (
-                      <StockDashboard stock={selectedStock} />
-                    )}
-                  </div>
-                </DrawerContent>
-              </Drawer>
-            }
-            {/* <div className="px-4 lg:px-6">
+        {
+          <Drawer
+            direction="right"
+            open={isDashboardOpen}
+            onOpenChange={setIsDashboardOpen}
+          >
+            <DrawerTitle />
+            <DrawerContent className="data-[vaul-drawer-direction=right]:!w-[80vw] data-[vaul-drawer-direction=left]:!w-[80vw] sm:!max-w-none">
+              <div className="h-full w-full overflow-y-auto p-6">
+                {selectedStock && selectedStock !== "" && (
+                  <StockDashboard stock={selectedStock} />
+                )}
+              </div>
+            </DrawerContent>
+          </Drawer>
+        }
+        {/* <div className="px-4 lg:px-6">
                 <ChartLineInteractive />
               </div>              */}
-            {/* <div className="px-4 lg:px-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* <div className="px-4 lg:px-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Card className="h-full min-h-[300px] flex flex-col">
                   <CardContent className="flex-1">
                     <ChartPieInteractive />
@@ -152,9 +191,7 @@ export default function Page() {
                   </CardContent>
                 </Card>
               </div>              */}
-          </div>
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+      </div>
+    </div>
   );
 }

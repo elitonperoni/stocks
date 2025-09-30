@@ -1,7 +1,8 @@
 import { formatCurrency } from "@/utils/formatCurrency";
 import { JSX } from "react/jsx-runtime";
 
-export default function labelValuePositiveNegative(value: number): JSX.Element {
+
+export default function labelValuePositiveNegative(value: number, isPercentage: boolean): JSX.Element {
   const isPositive = value >= 0;
   return (
     <div
@@ -11,7 +12,7 @@ export default function labelValuePositiveNegative(value: number): JSX.Element {
           : "text-red-600 dark:text-red-400"
       }`}
     >
-      {formatCurrency(value * (isPositive ? 1 : -1))}
+      {isPercentage ? `${value.toFixed(2)}%` : formatCurrency(value * (isPositive ? 1 : -1))}
     </div>
   );
 }

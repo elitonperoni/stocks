@@ -60,24 +60,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -169,9 +151,9 @@ const columns: ColumnDef<StocksResponse>[] = [
   },
   {
     accessorKey: "change",
-    header: "Variação R$",
+    header: "Variação %",
     cell: ({ row }) => {
-      return labelValuePositiveNegative(row.original.change);
+      return labelValuePositiveNegative(row.original.change, true);
     },
     enableHiding: false,
   },
@@ -187,30 +169,30 @@ const columns: ColumnDef<StocksResponse>[] = [
     },
     enableHiding: false,
   },
-  {
-    id: "id",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Make a copy</DropdownMenuItem>
-          <DropdownMenuItem>Favorite</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
-  },
+  // {
+  //   id: "id",
+  //   cell: () => (
+  //     <DropdownMenu>
+  //       <DropdownMenuTrigger asChild>
+  //         <Button
+  //           variant="ghost"
+  //           className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+  //           size="icon"
+  //         >
+  //           <IconDotsVertical />
+  //           <span className="sr-only">Open menu</span>
+  //         </Button>
+  //       </DropdownMenuTrigger>
+  //       <DropdownMenuContent align="end" className="w-32">
+  //         <DropdownMenuItem>Edit</DropdownMenuItem>
+  //         <DropdownMenuItem>Make a copy</DropdownMenuItem>
+  //         <DropdownMenuItem>Favorite</DropdownMenuItem>
+  //         <DropdownMenuSeparator />
+  //         <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+  //       </DropdownMenuContent>
+  //     </DropdownMenu>
+  //   ),
+  // },
 ];
 
 function DraggableRow({
