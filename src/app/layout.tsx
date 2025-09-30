@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Stocks B3",
+  title: "Ações B3",
   description: "Análise de tendências e dados do mercado de ações brasileiro.",
 };
 
