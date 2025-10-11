@@ -9,28 +9,20 @@ import {
   TouchSensor,
   useSensor,
   useSensors,
-  type DragEndEvent,
   type UniqueIdentifier,
 } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
-  arrayMove,
   SortableContext,
   useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
-  IconChevronDown,
   IconChevronLeft,
   IconChevronRight,
   IconChevronsLeft,
   IconChevronsRight,
-  IconDotsVertical,
-  IconGripVertical,
-  IconLayoutColumns,
-  IconPlus,
-  IconTrendingUp,
 } from "@tabler/icons-react";
 import {
   ColumnDef,
@@ -47,20 +39,9 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
-import { toast } from "sonner";
 import { z } from "zod";
 
-import { useIsMobile } from "@/hooks/use-mobile";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -69,7 +50,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import {
   Table,
   TableBody,
@@ -169,39 +149,15 @@ const columns: ColumnDef<StocksResponse>[] = [
     },
     enableHiding: false,
   },
-  // {
-  //   id: "id",
-  //   cell: () => (
-  //     <DropdownMenu>
-  //       <DropdownMenuTrigger asChild>
-  //         <Button
-  //           variant="ghost"
-  //           className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-  //           size="icon"
-  //         >
-  //           <IconDotsVertical />
-  //           <span className="sr-only">Open menu</span>
-  //         </Button>
-  //       </DropdownMenuTrigger>
-  //       <DropdownMenuContent align="end" className="w-32">
-  //         <DropdownMenuItem>Edit</DropdownMenuItem>
-  //         <DropdownMenuItem>Make a copy</DropdownMenuItem>
-  //         <DropdownMenuItem>Favorite</DropdownMenuItem>
-  //         <DropdownMenuSeparator />
-  //         <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-  //       </DropdownMenuContent>
-  //     </DropdownMenu>
-  //   ),
-  // },
 ];
 
 function DraggableRow({
   row,
   onRowClick,
-}: {
+}: Readonly<{
   row: Row<z.infer<typeof schema>>;
   onRowClick?: (row: StocksResponse) => void;
-}) {
+}>) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
     id: row.original.id,
   });
@@ -232,11 +188,11 @@ export function DataTable({
   data,
   loading = false,
   onRowClick,
-}: {
+}: Readonly<{
   data: StocksResponse[];
   loading?: boolean;
   onRowClick?: (row: StocksResponse) => void;
-}) {
+}>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -298,7 +254,6 @@ export function DataTable({
           <DndContext
             collisionDetection={closestCenter}
             modifiers={[restrictToVerticalAxis]}
-            //onDragEnd={handleDragEnd}
             sensors={sensors}
             id={sortableId}
           >
