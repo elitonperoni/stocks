@@ -1,7 +1,7 @@
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { Button } from "@/components/ui/button";
 
-const rangeOptions = ["2D", "5D", "1MO", "3MO"];
+const rangeOptions = ["2D", "5D", "1MO", "3MO", "6MO", "1Y", "5Y"];
 
 export function RangeSelector({
   rangeSelected,
@@ -18,7 +18,10 @@ export function RangeSelector({
     "2D": "Últimos 2 dias",
     "5D": "Últimos 5 dias",
     "1MO": "Último mês",
-    "3MO": "Últimos 3 meses"
+    "3MO": "Últimos 3 meses",
+    "6MO": "Últimos 6 meses",
+    "1Y": "Último ano",
+    "5Y": "Últimos 5 anos"
   };
 
   return (
