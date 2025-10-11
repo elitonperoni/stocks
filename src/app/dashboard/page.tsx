@@ -51,7 +51,6 @@ export default function Page() {
     debugger;
     try {
       setLoading(true);
-
       const request: StockRequest = {
         searchTerm: data.codigo,
         sector: data.setor,
