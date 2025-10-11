@@ -62,8 +62,8 @@ export default function LineChartStock({
     <Card className="w-full h-full bg-gray-800 border-gray-700">
       <CardHeader>
         <CardTitle className="text-white">
-          Histórico de Preços - Intervalo de {formatRangeToText(range)} 
-          {(range === "1D") && (chartData && chartData?.length > 0 ? (` - ${chartData[0]?.fullDate.toString() ?? ""}`) : null)}
+          Histórico de Preços - Intervalo de {formatRangeToText(range)}
+          {(` | ${chartData[0]?.fullDate.toString() ?? ""} - ${new Date().toLocaleDateString("pt-BR") ?? ""}`)}
         </CardTitle>
         <CardDescription className="text-gray-400">
           Evolução do preço de fechamento da ação {stockData?.symbol}
@@ -100,12 +100,14 @@ export default function LineChartStock({
                 dataKey="date"
                 tick={{ fontSize: 12, fill: "#9CA3AF" }}
                 tickLine={{ stroke: "#6B7280" }}
+                 tickMargin={8}
               />
               <YAxis
                 domain={["dataMin - 0.1", "dataMax + 0.1"]}
                 tick={{ fontSize: 12, fill: "#9CA3AF" }}
                 tickLine={{ stroke: "#6B7280" }}
                 tickFormatter={(value) => `R$ ${value.toFixed(2)}`}
+                tickMargin={16}
               />
               <Tooltip
                 content={({ active, payload, label }) => {

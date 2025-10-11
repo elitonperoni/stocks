@@ -2,8 +2,8 @@
 
 export function formatRangeToText(value : string ): string {
     switch (value) {
-        case "1D":
-        return "1 dia";
+        case "2D":
+        return "2 dias";
         case "5D":
         return "5 dias";
         case "1MO":
