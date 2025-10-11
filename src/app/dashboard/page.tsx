@@ -76,36 +76,19 @@ export default function Page() {
       <div className="@container/main flex flex-1 flex-col gap-2">
         <div className="flex flex-col items-start pt-6 pb-2 px-4">
           <div className="flex items-center gap-3 mb-1 ml-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-8 w-8 text-blue-500"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 17v-6a2 2 0 012-2h2a2 2 0 012 2v6m0 0V9a2 2 0 012-2h2a2 2 0 012 2v8m0 0V5a2 2 0 012-2h2a2 2 0 012 2v12"
-              />
+            {/* Ícone de gráfico de linha */}
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 17l4-4 4 4 4-8" />
             </svg>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-7 w-7 text-green-500"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3zm0 10c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8z"
-              />
+            
+            {/* Ícone de notícias */}
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <rect x="3" y="5" width="18" height="14" rx="2" strokeWidth={2} stroke="currentColor" fill="none" />
+              <line x1="7" y1="9" x2="17" y2="9" strokeWidth={2} stroke="currentColor" />
+              <line x1="7" y1="13" x2="17" y2="13" strokeWidth={2} stroke="currentColor" />
             </svg>
             <span className="text-4xl font-bold text-white tracking-tight">
-              Bolsa de Valores do Brasil
+              Bolsa de valores do Brasil
             </span>
           </div>
           <span className="text-lg text-gray-400 font-medium mt-1 ml-4">
