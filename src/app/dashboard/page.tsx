@@ -1,10 +1,7 @@
 "use client";
 
-import { AppSidebar } from "@/components/app-sidebar";
 import { DataTable } from "@/components/data-table";
-import { SiteHeader } from "@/components/site-header";
-
-import FilterDataTab, { availableStockTypes } from "./filterDataTab";
+import FilterDataTab from "./filterDataTab";
 import { useEffect, useState } from "react";
 import { stockApi } from "@/api";
 import { StocksResponse } from "@/models/response/stocksResponse";
@@ -75,17 +72,6 @@ export default function Page() {
   }
 
   return (
-    // <SidebarProvider
-    //   style={
-    //     {
-    //       "--sidebar-width": "calc(var(--spacing) * 72)",
-    //       "--header-height": "calc(var(--spacing) * 12)",
-    //     } as React.CSSProperties
-    //   }
-    // >
-    //   <AppSidebar variant="inset" />
-    //   <SidebarInset>
-    //     <SiteHeader />
     <div className="flex flex-1 flex-col">
       <div className="@container/main flex flex-1 flex-col gap-2">
         <div className="flex flex-col items-start pt-6 pb-2 px-4">
@@ -164,32 +150,7 @@ export default function Page() {
               </div>
             </DrawerContent>
           </Drawer>
-        }
-        {/* <div className="px-4 lg:px-6">
-                <ChartLineInteractive />
-              </div>              */}
-        {/* <div className="px-4 lg:px-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card className="h-full min-h-[300px] flex flex-col">
-                  <CardContent className="flex-1">
-                    <ChartPieInteractive />
-                  </CardContent>
-                </Card>
-                <Card className="h-full min-h-[300px] flex flex-col">
-                  <CardContent className="flex-1">
-                    <ChartRadialText />
-                  </CardContent>
-                </Card>
-                <Card className="h-full min-h-[300px] flex flex-col">
-                  <CardContent className="flex-1">
-                    <ChartTooltipDefault />
-                  </CardContent>
-                </Card>
-                <Card className="h-full min-h-[300px] flex flex-col">
-                  <CardContent className="flex-1">
-                    <ChartBarMultiple />
-                  </CardContent>
-                </Card>
-              </div>              */}
+        }      
       </div>
     </div>
   );

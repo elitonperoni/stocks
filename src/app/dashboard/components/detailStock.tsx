@@ -5,10 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import {
   TrendingUp,
   TrendingDown,
-  Calendar,
   DollarSign,
   BarChart3,
-  Volume2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { formatBRL, formatLargeNumber } from "@/utils/formt";

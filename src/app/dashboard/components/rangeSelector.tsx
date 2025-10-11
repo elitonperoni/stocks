@@ -6,13 +6,10 @@ const rangeOptions = ["2D", "5D", "1MO", "3MO", "6MO", "1Y", "5Y"];
 export function RangeSelector({
   rangeSelected,
   onSelect,
-}: {
+}: Readonly<{ 
   rangeSelected: string;
   onSelect: (range: string) => void;
-}) {
-  const handleClick = (range: string) => {
-    onSelect(range);
-  };
+}>) {
 
   const rangeDescription: Record<string, string> = {
     "2D": "Últimos 2 dias",

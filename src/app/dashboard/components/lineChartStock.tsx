@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import isEmpty from 'lodash/isEmpty';
+import isEmpty from "lodash/isEmpty";
 import { ChartContainer } from "@/components/ui/chart";
 import {
   Area,
@@ -33,37 +33,35 @@ export default function LineChartStock({
 }: LineChartStockProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
-  const chartData = !isEmpty(stockData) ? stockData?.historicalDataPrice.map((item, index) => {
-    const dateObject = new Date(item.date * 1000);
+  const chartData = !isEmpty(stockData)
+    ? stockData?.historicalDataPrice.map((item, index) => {
+        const dateObject = new Date(item.date * 1000);
 
-    const formattedDate =
-      range === "1D"
-        ? dateObject.toLocaleTimeString("pt-BR", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })
-        : dateObject.toLocaleDateString("pt-BR", {
-            day: "2-digit",
-            month: "2-digit",
-          });
-    return {
-      day: `Dia ${index + 1}`,
-      date: formattedDate, 
-      fullDate: dateObject.toLocaleDateString("pt-BR"),
-      close: item.close,
-      open: item.open,
-      high: item.high,
-      low: item.low,
-      volume: item.volume,
-    };
-  }) : [];
+        const formattedDate = dateObject.toLocaleDateString("pt-BR", {
+          day: "2-digit",
+          month: "2-digit",
+        });
+        return {
+          day: `Dia ${index + 1}`,
+          date: formattedDate,
+          fullDate: dateObject.toLocaleDateString("pt-BR"),
+          close: item.close,
+          open: item.open,
+          high: item.high,
+          low: item.low,
+          volume: item.volume,
+        };
+      })
+    : [];
 
   return (
     <Card className="w-full h-full bg-gray-800 border-gray-700">
       <CardHeader>
         <CardTitle className="text-white">
           Histórico de Preços - Intervalo de {formatRangeToText(range)}
-          {(` | ${chartData[0]?.fullDate.toString() ?? ""} - ${new Date().toLocaleDateString("pt-BR") ?? ""}`)}
+          {` | ${chartData[0]?.fullDate.toString() ?? ""} - ${
+            new Date().toLocaleDateString("pt-BR") ?? ""
+          }`}
         </CardTitle>
         <CardDescription className="text-gray-400">
           Evolução do preço de fechamento da ação {stockData?.symbol}
@@ -100,7 +98,7 @@ export default function LineChartStock({
                 dataKey="date"
                 tick={{ fontSize: 12, fill: "#9CA3AF" }}
                 tickLine={{ stroke: "#6B7280" }}
-                 tickMargin={8}
+                tickMargin={8}
               />
               <YAxis
                 domain={["dataMin - 0.1", "dataMax + 0.1"]}

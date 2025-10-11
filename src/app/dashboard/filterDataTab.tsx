@@ -2,8 +2,7 @@
 
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { Combobox } from "@/components/ui/combobox";
-import { Input } from "@/components/ui/input";
+import { Combobox } from "@/components/ui/combobox"
 import { Label } from "@/components/ui/label";
 import {
   Popover,
@@ -13,8 +12,7 @@ import {
 
 import { Form, FormField } from "@/components/ui/form";
 import {  Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { stockApi } from "@/api";
+import { useState } from "react";
 interface FilterFormValues {
   setor: string;
   codigo: string;
@@ -28,7 +26,6 @@ interface FilterDataTabProps {
 }
 
 export default function FilterDataTab({
-  filterData,
   onSetFilterData,
   onSearchStocks
 }: FilterDataTabProps) {
@@ -39,7 +36,7 @@ export default function FilterDataTab({
       tipo: "",
     },
   });
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
  
   const onSubmit: SubmitHandler<FilterFormValues> = async (data) => {
     const newData = {

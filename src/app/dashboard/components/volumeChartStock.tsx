@@ -23,8 +23,8 @@ import { StockDetail } from "@/models/response/stockDetailResponse";
 import { formatRangeToText } from "@/utils/formatRangeToText";
 
 type BarhartStockProps = {
-  stockData: StockDetail | null; 
-  range: string;
+  readonly stockData: StockDetail | null; 
+  readonly range: string;
 };
 
 export default function VolumeChartStock({ stockData, range } : BarhartStockProps) {
