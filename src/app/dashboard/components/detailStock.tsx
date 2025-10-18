@@ -239,19 +239,24 @@ export default function StockDashboard({ stock }: Readonly<{ stock: string }>) {
             </div>
 
             <Card className="bg-gray-800 border-gray-700 overflow-hidden">
-              <div className="w-full" style={{ paddingInline: 6 }}>
-                <LineChartStock
+              {/* Container rolável para telas muito pequenas */}
+              <div className="w-full overflow-x-auto -mx-4 px-4">
+                <div className="min-w-[640px]" style={{ paddingInline: 6 }}>
+                  <LineChartStock
+                    stockData={stocksDetailData}
+                    range={rangeSelected}
+                  />
+                </div>
+              </div>
+            </Card>
+
+            <div className="mt-4 overflow-x-auto -mx-4 px-4">
+              <div className="min-w-[640px]">
+                <VolumeChartStock
                   stockData={stocksDetailData}
                   range={rangeSelected}
                 />
               </div>
-            </Card>
-
-            <div className="mt-4">
-              <VolumeChartStock
-                stockData={stocksDetailData}
-                range={rangeSelected}
-              />
             </div>
           </>
         )}
