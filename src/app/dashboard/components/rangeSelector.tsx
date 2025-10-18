@@ -22,7 +22,7 @@ export function RangeSelector({
   };
 
   return (
-   <div className="flex gap-2">
+   <div className="flex flex-wrap gap-2 sm:flex-nowrap">
       {rangeOptions.map((range) => (
         <Tooltip.Provider key={range}>
           <Tooltip.Root>
@@ -30,7 +30,7 @@ export function RangeSelector({
               <Button
                 variant="ghost"
                 onClick={() => onSelect(range)}
-                className={`text-xs px-2 py-1 rounded-sm transition-colors ${
+                className={`text-[11px] sm:text-xs px-2 sm:px-3 py-1 rounded-sm transition-colors min-w-[44px] text-center ${
                   rangeSelected === range
                     ? "bg-white text-black shadow-md"
                     : "text-muted-foreground hover:bg-accent"
