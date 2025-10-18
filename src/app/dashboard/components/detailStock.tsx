@@ -24,8 +24,7 @@ export default function StockDashboard({ stock }: Readonly<{ stock: string }>) {
   const [loadingNews, setLoadingNews] = useState<boolean>(false);
   const [rangeSelected, setRangeSelected] = useState("5D");
 
-  useEffect(() => {
-    debugger
+  useEffect(() => {    
     if (stock && !loading) {
       fetchStocks(stock, rangeSelected.toLowerCase());
     }

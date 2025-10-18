@@ -47,8 +47,7 @@ export default function Page() {
     await fetchStocks(data);
   }
 
-  async function fetchStocks(data: PageProps) {
-    debugger;
+  async function fetchStocks(data: PageProps) {    
     try {
       setLoading(true);
       const request: StockRequest = {
