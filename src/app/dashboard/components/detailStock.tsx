@@ -59,26 +59,28 @@ export default function StockDashboard({ stock }: Readonly<{ stock: string }>) {
 
   return (
     <div className="min-h-screen bg-gray-900 p-0">
-      <div className="w-full h-full space-y-6 p-6">
+      <div className="w-full h-full space-y-6 px-4 py-6 sm:px-6">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center gap-3 mb-6">
           {!loading && stocksDetailData?.logoUrl && (
             <img
               src={stocksDetailData?.logoUrl}
               alt={stocksDetailData?.symbol}
-              className="w-12 h-12"
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded"
             />
           )}
-          <div>
-            <h1 className="text-3xl font-bold text-white">
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-3xl font-bold text-white truncate">
               {stocksDetailData?.shortName}
             </h1>
-            <p className="text-gray-400">{stocksDetailData?.shortName}</p>
+            <p className="text-sm text-gray-400 truncate">
+              {stocksDetailData?.shortName}
+            </p>
           </div>
         </div>
 
         {/* Métricas principais */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-white">
@@ -87,7 +89,7 @@ export default function StockDashboard({ stock }: Readonly<{ stock: string }>) {
               <DollarSign className="h-4 w-4 text-gray-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-white">
+              <div className="text-xl sm:text-2xl font-bold text-white">
                 {formatBRL(stocksDetailData?.regularMarketPrice ?? 0)}
               </div>
               <div className="flex items-center gap-1 text-xs">
@@ -115,7 +117,7 @@ export default function StockDashboard({ stock }: Readonly<{ stock: string }>) {
               <DollarSign className="h-4 w-4 text-gray-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-white">
+              <div className="text-xl sm:text-2xl font-bold text-white">
                 {stocksDetailData
                   ? formatLargeNumber(stocksDetailData?.regularMarketVolume)
                   : 0}
@@ -132,7 +134,7 @@ export default function StockDashboard({ stock }: Readonly<{ stock: string }>) {
               <BarChart3 className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-white">
+              <div className="text-xl sm:text-2xl font-bold text-white">
                 {stocksDetailData
                   ? formatBRL((stocksDetailData?.marketCap ?? 0) / 1000000000) +
                     " B"
@@ -150,7 +152,7 @@ export default function StockDashboard({ stock }: Readonly<{ stock: string }>) {
               <DollarSign className="h-4 w-4 text-gray-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-white">
+              <div className="text-xl sm:text-2xl font-bold text-white">
                 {stocksDetailData
                   ? stocksDetailData?.priceEarnings?.toFixed(2)
                   : 0}
@@ -220,11 +222,11 @@ export default function StockDashboard({ stock }: Readonly<{ stock: string }>) {
           </div>
         ) : (
           <>
-            <h2 className="text-xl font-semibold text-white">
+            <h2 className="text-lg sm:text-xl font-semibold text-white">
               Evolução do Preço
             </h2>
 
-            <div style={{ paddingInline: 0 }}>
+            <div className="mt-2 mb-4" style={{ paddingInline: 0 }}>
                 <RangeSelector
                   rangeSelected={rangeSelected}
                   onSelect={(range) => {
@@ -237,8 +239,8 @@ export default function StockDashboard({ stock }: Readonly<{ stock: string }>) {
                 />
             </div>
 
-            <Card className="bg-gray-800 border-gray-700">
-              <div style={{ paddingInline: 10 }}>
+            <Card className="bg-gray-800 border-gray-700 overflow-hidden">
+              <div className="w-full" style={{ paddingInline: 6 }}>
                 <LineChartStock
                   stockData={stocksDetailData}
                   range={rangeSelected}
@@ -246,15 +248,17 @@ export default function StockDashboard({ stock }: Readonly<{ stock: string }>) {
               </div>
             </Card>
 
-            <VolumeChartStock
-              stockData={stocksDetailData}
-              range={rangeSelected}
-            />
+            <div className="mt-4">
+              <VolumeChartStock
+                stockData={stocksDetailData}
+                range={rangeSelected}
+              />
+            </div>
           </>
         )}
 
         {/* Informações adicionais */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader>
               <CardTitle className="text-white">
@@ -352,7 +356,7 @@ export default function StockDashboard({ stock }: Readonly<{ stock: string }>) {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader>
               <CardTitle className="text-white">
@@ -450,9 +454,9 @@ export default function StockDashboard({ stock }: Readonly<{ stock: string }>) {
           </Card>
         </div>
 
-        <div className="flex justify-center p-8">
+        <div className="flex justify-center py-6 px-0">
           {!loadingNews && stocksNews ? (
-            <div className="grid grid-cols-4 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
               {stocksNews.map((news, index) => (
                 <NewsCard
                   key={index}
@@ -466,7 +470,7 @@ export default function StockDashboard({ stock }: Readonly<{ stock: string }>) {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-4 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-2">
               {Array.from({ length: 6 }).map((_, index) => (
                 <div
                   key={index}
